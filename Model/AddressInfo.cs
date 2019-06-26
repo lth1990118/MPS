@@ -11,6 +11,6 @@ namespace MPS.Model
         public long ID { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public DateTime? ModifiedOn { get; set; }
+        public string ModifiedOn { get; set; }
     }
 }

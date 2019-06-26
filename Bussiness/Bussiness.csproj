@@ -47,7 +47,9 @@
     <Compile Include="ASN.cs" />
     <Compile Include="PO.cs" />
     <Compile Include="RtGoods.cs" />
+    <Compile Include="TMSReqInfoBuss.cs" />
     <Compile Include="U9Service\BatchQueryItemByDTOSRVStub.cs" />
+    <Compile Include="U9Service\CustKukaBSBSSVIPubSP.cs" />
     <Compile Include="U9Service\Common.cs" />
     <Compile Include="ItemMaster.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

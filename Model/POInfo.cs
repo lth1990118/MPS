@@ -54,6 +54,10 @@ namespace MPS.Model
     {
         public long PurchaseOrder { get; set; }
         /// <summary>
+        /// 行id
+        /// </summary>
+        public long ID { get; set; }
+        /// <summary>
         /// 行号
         /// </summary>
         public int DocLineNo { get; set; }

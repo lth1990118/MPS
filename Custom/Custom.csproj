@@ -47,6 +47,7 @@
     <Compile Include="DBHelper.cs" />
     <Compile Include="EntitiesFinderHelper.cs" />
     <Compile Include="FormatTool.cs" />
+    <Compile Include="JsonHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
