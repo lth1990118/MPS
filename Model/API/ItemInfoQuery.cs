@@ -9,6 +9,7 @@ namespace MPS.Model
     {
         public DateTime? startTime { get; set; }
         public DateTime? endTime { get; set; }
+        public string keyValue { get; set; }
 
     }
 }
