@@ -37,19 +37,20 @@ namespace MPS.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        public object GetRtGoodsDoc(RecModel<List<ItemInfoQuery>> param)
+        [HttpPost]
+        public object RtGoodsDocInfo(RecModel<ItemInfoQuery> param)
         {
-            RetModel<String> retModel = new RetModel<String>();
-            //try
-            //{
-            //    Bussiness.TMSReqInfoBuss tms = new Bussiness.TMSReqInfoBuss();
-            //    retModel = tms.InsertTMSReqInfo(param.data);
-            //}
-            //catch (Exception e)
-            //{
-            //    retModel.message = Common.GetExceptionMessage(e);
-            //    retModel.code = "-1";
-            //}
+            RetModel<List<RtGoodsDocInfo>> retModel = new RetModel<List<RtGoodsDocInfo>>();
+            try
+            {
+                Bussiness.TMSReqInfoBuss tms = new Bussiness.TMSReqInfoBuss();
+                retModel = tms.GetRtGoodsDocInfo(param);
+            }
+            catch (Exception e)
+            {
+                retModel.message = Common.GetExceptionMessage(e);
+                retModel.code = "-1";
+            }
             return retModel;
         }
     }

@@ -68,6 +68,7 @@
     <Compile Include="SupplierInfo - 复制.cs" />
     <Compile Include="SupplierInfo.cs" />
     <Compile Include="SupplySourceInfo.cs" />
+    <Compile Include="TMSModel\RtGoodsDocInfo.cs" />
     <Compile Include="TMSModel\TMSReqInfo.cs" />
     <Compile Include="U9Service\CustKukaBSBSSVIPubSP.cs" />
     <Compile Include="U9Service\CreatePOSRVStub.cs" />
