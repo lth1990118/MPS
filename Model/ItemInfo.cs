@@ -92,7 +92,7 @@ namespace MPS.Model
         /// <summary>
         /// 采购周期
         /// </summary>
-        public string POCycle { get; set; }
+        public int POCycle { get; set; }
         /// <summary>
         /// 最小起订量
         /// </summary>

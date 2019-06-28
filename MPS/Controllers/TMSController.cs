@@ -12,19 +12,44 @@ namespace MPS.Controllers
 {
     public class TMSController : ApiController
     {
-        public object InsertReqInfo(List<TMSReqInfo> param)
+        /// <summary>
+        /// TMS插入U9中间表各个环节时间节点信息
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public object InsertReqInfo(RecModel<List<TMSReqInfo>> param)
         {
             RetModel<String> retModel = new RetModel<String>();
             try
             {
                 Bussiness.TMSReqInfoBuss tms = new Bussiness.TMSReqInfoBuss();
-                retModel = tms.InsertTMSReqInfo(param);
+                retModel = tms.InsertTMSReqInfo(param.data);
             }
             catch (Exception e)
             {
                 retModel.message = Common.GetExceptionMessage(e);
                 retModel.code = "-1";
             }
+            return retModel;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        public object GetRtGoodsDoc(RecModel<List<ItemInfoQuery>> param)
+        {
+            RetModel<String> retModel = new RetModel<String>();
+            //try
+            //{
+            //    Bussiness.TMSReqInfoBuss tms = new Bussiness.TMSReqInfoBuss();
+            //    retModel = tms.InsertTMSReqInfo(param.data);
+            //}
+            //catch (Exception e)
+            //{
+            //    retModel.message = Common.GetExceptionMessage(e);
+            //    retModel.code = "-1";
+            //}
             return retModel;
         }
     }
