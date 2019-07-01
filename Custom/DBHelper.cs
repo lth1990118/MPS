@@ -73,13 +73,14 @@ namespace MPS.Custom
                         comm.Parameters.Add(item);
                     }
                     SqlDataAdapter command = new SqlDataAdapter(comm);
+                    comm.CommandTimeout = 180;
                     command.Fill(ds, "ds");
                     comm.Parameters.Clear();
                     return ds;
                 }
                 catch (System.Data.SqlClient.SqlException ex)
                 {
-                    throw new Exception(ex.Message);
+                    throw ex;// new Exception(ex.Message);
                 }
                 finally
                 {
