@@ -44,23 +44,23 @@ namespace MPS.Bussiness
                 string sql = "";
                 if (param.data.startTime.HasValue)
                 {
-                    sqlLineS.Append(" and so.ModifiedOn>=@startTime");
+                    //sqlLineS.Append(" and so.ModifiedOn>=@startTime");
                     //sqlHeadS.Append(" and so.ModifiedOn>=@startTime");
-                    sqlCount.Append(" and so.ModifiedOn>=@startTime");
-                    sql+=" and so.ModifiedOn>=@startTime";
+                    sqlCount.Append(" and nx.销售订单审核日期>@startTime");
+                    sql+= " and nx.销售订单审核日期>@startTime";
                     listParam.Add(new SqlParameter("startTime", param.data.startTime));
                 }
                 if (param.data.endTime.HasValue)
                 {
-                    sqlLineS.Append(" and so.ModifiedOn<@endTime");
+                    //sqlLineS.Append(" and so.ModifiedOn<@endTime");
                     //sqlHeadS.Append(" and so.ModifiedOn<@endTime");
-                    sqlCount.Append(" and so.ModifiedOn<@endTime");
-                    sql += "  and so.ModifiedOn<@endTime";
+                    sqlCount.Append(" and nx.销售订单审核日期<@endTime");
+                    sql += "  and nx.销售订单审核日期<@endTime";
                     listParam.Add(new SqlParameter("endTime", param.data.endTime));
                 }
                 if (!string.IsNullOrEmpty(param.data.keyValue))
                 {
-                    sqlLineS.Append(" and so.DocNo=@DocNo");
+                    //sqlLineS.Append(" and so.DocNo=@DocNo");
                     //sqlHeadS.Append(" and so.DocNo=@DocNo");
                     sqlCount.Append(" and so.DocNo=@DocNo");
                     sql += " and so.DocNo=@DocNo";
@@ -79,18 +79,25 @@ namespace MPS.Bussiness
                     listParam.Add(new SqlParameter("skip", param.data.pageIndex * param.data.pageSize));
                     listParam.Add(new SqlParameter("Take", (param.data.pageIndex + 1) * param.data.pageSize));
                     sql += " and so.id in (select ID from #TempA)";
-                    
+
                     //sqlHeadS.Append(" and so.id in (select ID from #TempA)");
                     sqlLineS.Append(" and so.id in (select ID from #TempA)");
+                }
+                else
+                {
+                    throw new Exception("pageSize不能为0或空");
                 }
                 this.sqlHead = string.Format(this.sqlHead, sql);
             }
             StringBuilder sqlQuery = new StringBuilder();
             sqlQuery.AppendLine(sqlSOPage.ToString());
             sqlQuery.AppendLine(this.sqlHead);
+            //StringBuilder sqlQuery2 = new StringBuilder();
+            //sqlQuery2.AppendLine(sqlSOPage.ToString());
             sqlQuery.AppendLine(sqlLineS.ToString());
             result.message = DbHelperSQL.QueryCountOnly(sqlCount.ToString(), listParam).ToString();
             var dataSet = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
+            //var dataSet2 = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
             var dataHead = ExtendMethod.ToDataList<SOInfo>(dataSet.Tables[0]);
             var dataLine = ExtendMethod.ToDataList<SOLineInfo>(dataSet.Tables[1]);
             Dictionary<long, List<SOLineInfo>> map = new Dictionary<long, List<SOLineInfo>>();
