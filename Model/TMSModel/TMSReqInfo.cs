@@ -43,6 +43,10 @@ namespace MPS.Model.TMSModel
         /// 节点时间
         /// </summary>
         public string NodeTime { get; set; }
+        /// <summary>
+        /// 业务类型
+        /// </summary>
+        public string BizType { get; set; }
     }
 }
 

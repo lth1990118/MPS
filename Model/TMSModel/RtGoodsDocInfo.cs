@@ -8,6 +8,7 @@ namespace MPS.Model.TMSModel
 {
     public class RtGoodsDocInfo
     {
+        public long ID { get; set; }
         /// <summary>
         /// 回货计划单号
         /// </summary>
@@ -16,16 +17,7 @@ namespace MPS.Model.TMSModel
         /// 拼车单号
         /// </summary>
         public string CarpoolingNo { get; set; }
-        /// <summary>
-        /// 料品
-        /// </summary>
-        public long Item { get; set; }
-        public string ItemCode { get; set; }
-        public string ItemName { get; set; }
-        /// <summary>
-        /// 回货计划确认数量
-        /// </summary>
-        public string PlanQty { get; set; }
+        public DateTime ModifiedOn { get; set; }
         /// <summary>
         /// 供应商
         /// </summary>
@@ -43,7 +35,21 @@ namespace MPS.Model.TMSModel
         /// </summary>
         public string SendAddressName { get; set; }
         public string SendAddressCode { get; set; }
-             
 
+        public List<RtGoodsDocLineInfo> RtGoodsDocLines { get; set; }
+    }
+    public class RtGoodsDocLineInfo
+    {
+        public long RtGoodsDoc { get; set; }
+        /// <summary>
+        /// 料品
+        /// </summary>
+        public long Item { get; set; }
+        public string ItemCode { get; set; }
+        public string ItemName { get; set; }
+        /// <summary>
+        /// 回货计划确认数量
+        /// </summary>
+        public string PlanQty { get; set; }
     }
 }

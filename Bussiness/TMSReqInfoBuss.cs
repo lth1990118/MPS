@@ -46,7 +46,10 @@ namespace MPS.Bussiness
             return result;
         }
 
-        private string sql = "select ROW_NUMBER() over(order by rgd.id)as rownum,rgd.DocNo as RtDocNo,rgd.DescFlexField_PrivateDescSeg5 as CarpoolingNo   ,rgdl.ItemID as Item,im.code as ItemCode,im.name as ItemName   ,rgdl.ConfirmQty1 as PlanQty   ,s.ID as Supplier,s.code as SupplierCode,st.name as SupplierName   ,o.id as RcvOrg,o.code as RcvOrgCode,ot.name as RcvOrgName   ,rgd.DeliveryAddress as SendAddressName,#tempData.code as SendAddressCode    from Kuka_VPT_RtGoodsDoc rgd   left join Kuka_VPT_RtGoodsDocLine rgdl on rgd.id=rgdl.RtGoodsDoc   left join CBO_ItemMaster im on im.id=rgdl.ItemId   left join CBO_Supplier s on s.id=rgd.SupplierID   left join CBO_Supplier_Trl st on st.id=rgd.SupplierID   left join Base_Organization o on o.id=rgd.RcvOrg    left join Base_Organization_Trl ot on ot.id=rgd.RcvOrg    left join (  select dv.Code,dvt.Name from Base_ValueSetDef vsd    left join Base_DefineValue dv on dv.ValueSetDef=vsd.id   left join Base_DefineValue_Trl dvt on dvt.id=dv.id    where vsd.code='VP_KukaSendAddress') #tempData    on #tempData.Name=rgd.DeliveryAddress     where #tempData.Name!='直发' and rgd.RtStatus=2  ";
+        string sqlCount = " select count(1)  from Kuka_VPT_RtGoodsDoc rgd     left join CBO_Supplier s on s.id=rgd.SupplierID   left join CBO_Supplier_Trl st on st.id=rgd.SupplierID   left join Base_Organization o on o.id=rgd.RcvOrg    left join Base_Organization_Trl ot on ot.id=rgd.RcvOrg    left join (  select dv.Code,dvt.Name from Base_ValueSetDef vsd    left join Base_DefineValue dv on dv.ValueSetDef=vsd.id   left join Base_DefineValue_Trl dvt on dvt.id=dv.id    where vsd.code='VP_KukaSendAddress') #tempData    on #tempData.Name=rgd.DeliveryAddress     where #tempData.Name!='直发' and rgd.RtStatus=2  ";
+        private string sqlHead = "select ROW_NUMBER() over(order by rgd.id)as rownum,rgd.ID,rgd.DocNo as RtDocNo,rgd.DescFlexField_PrivateDescSeg5 as CarpoolingNo   ,s.ID as Supplier,s.code as SupplierCode,st.name as SupplierName   ,o.id as RcvOrg,o.code as RcvOrgCode,ot.name as RcvOrgName   ,rgd.DeliveryAddress as SendAddressName,#tempData.code as SendAddressCode    from Kuka_VPT_RtGoodsDoc rgd     left join CBO_Supplier s on s.id=rgd.SupplierID   left join CBO_Supplier_Trl st on st.id=rgd.SupplierID   left join Base_Organization o on o.id=rgd.RcvOrg    left join Base_Organization_Trl ot on ot.id=rgd.RcvOrg    left join (  select dv.Code,dvt.Name from Base_ValueSetDef vsd    left join Base_DefineValue dv on dv.ValueSetDef=vsd.id   left join Base_DefineValue_Trl dvt on dvt.id=dv.id    where vsd.code='VP_KukaSendAddress') #tempData    on #tempData.Name=rgd.DeliveryAddress     where #tempData.Name!='直发' and rgd.RtStatus=2  ";
+        string sqlLine = "select rgd.id as RtGoodsDoc,rgdl.ItemID as Item,im.code as ItemCode,im.name as ItemName   ,rgdl.ConfirmQty1 as PlanQty from Kuka_VPT_RtGoodsDoc rgd     left join CBO_Supplier s on s.id=rgd.SupplierID   left join CBO_Supplier_Trl st on st.id=rgd.SupplierID   left join Base_Organization o on o.id=rgd.RcvOrg    left join Base_Organization_Trl ot on ot.id=rgd.RcvOrg    left join (  select dv.Code,dvt.Name from Base_ValueSetDef vsd    left join Base_DefineValue dv on dv.ValueSetDef=vsd.id   left join Base_DefineValue_Trl dvt on dvt.id=dv.id    where vsd.code='VP_KukaSendAddress') #tempData    on #tempData.Name=rgd.DeliveryAddress left join Kuka_VPT_RtGoodsDocLine rgdl on rgd.id=rgdl.RtGoodsDoc left join CBO_ItemMaster im on im.id= rgdl.ItemId  where #tempData.Name!='直发' and rgd.RtStatus=2";
+        private string sqlSOPage = "select ROW_NUMBER() over(order by rgd.id)as rownum,rgd.id from Kuka_VPT_RtGoodsDoc rgd     left join CBO_Supplier s on s.id=rgd.SupplierID   left join CBO_Supplier_Trl st on st.id=rgd.SupplierID   left join Base_Organization o on o.id=rgd.RcvOrg    left join Base_Organization_Trl ot on ot.id=rgd.RcvOrg    left join (  select dv.Code,dvt.Name from Base_ValueSetDef vsd    left join Base_DefineValue dv on dv.ValueSetDef=vsd.id   left join Base_DefineValue_Trl dvt on dvt.id=dv.id    where vsd.code='VP_KukaSendAddress') #tempData    on #tempData.Name=rgd.DeliveryAddress     where #tempData.Name!='直发' and rgd.RtStatus=2 ";
         public RetModel<List<RtGoodsDocInfo>> GetRtGoodsDocInfo(RecModel<ItemInfoQuery> param)
         {
             RetModel<List<RtGoodsDocInfo>> result = new RetModel<List<RtGoodsDocInfo>>();
@@ -54,39 +57,77 @@ namespace MPS.Bussiness
             result.message = "0";
 
             List<SqlParameter> listParam = new List<SqlParameter>();
-            StringBuilder sqlQuery = new StringBuilder();
-            StringBuilder sqlExcute = new StringBuilder(this.sql);
+            StringBuilder sqlHeadS = new StringBuilder(this.sqlHead);
+            StringBuilder sqlLineS = new StringBuilder(this.sqlLine);
+            StringBuilder sqlSOPage = new StringBuilder();
+            StringBuilder sqlCount = new StringBuilder(this.sqlCount);
+            StringBuilder sqlExcute = new StringBuilder(this.sqlSOPage);
             if (param.data != null)
             {
                 if (param.data.startTime.HasValue)
                 {
+                    sqlLineS.Append(" and rgd.ModifiedOn>=@startTime");
+                    sqlHeadS.Append(" and rgd.ModifiedOn>=@startTime");
+                    sqlCount.Append(" and rgd.ModifiedOn>=@startTime");
                     sqlExcute.Append(" and rgd.ModifiedOn>=@startTime");
+                    //sqlExcute.Append(" and rgd.ModifiedOn>=@startTime");
                     listParam.Add(new SqlParameter("startTime", param.data.startTime));
                 }
                 if (param.data.endTime.HasValue)
                 {
+                    //sqlExcute.Append(" and rgd.ModifiedOn<@endTime");
+                    sqlLineS.Append(" and rgd.ModifiedOn<@endTime");
+                    sqlHeadS.Append(" and rgd.ModifiedOn<@endTime");
+                    sqlCount.Append(" and rgd.ModifiedOn<@endTime");
                     sqlExcute.Append(" and rgd.ModifiedOn<@endTime");
                     listParam.Add(new SqlParameter("endTime", param.data.endTime));
                 }
-                sqlQuery.Append("select * from (");
-                sqlQuery.Append(sqlExcute);
-                sqlQuery.Append(") t");
+                sqlSOPage.Append("select ID into #TempA from (");
+                sqlSOPage.Append(sqlExcute);
+                sqlSOPage.Append(") t");
 
                 if (param.data.pageSize != 0)
                 {
-                    sqlQuery.Append(" where rownum>@skip and rownum<=@Take");
+                    sqlSOPage.Append(" where rownum>@skip and rownum<=@Take ");
                     listParam.Add(new SqlParameter("skip", param.data.pageIndex * param.data.pageSize));
                     listParam.Add(new SqlParameter("Take", (param.data.pageIndex + 1) * param.data.pageSize));
+                    sqlHeadS.Append(" and rgd.id in (select ID from #TempA)");
+                    sqlLineS.Append(" and rgd.id in (select ID from #TempA)");
                 }
             }
-            else
+            
+             StringBuilder sqlQuery = new StringBuilder();
+            sqlQuery.AppendLine(sqlSOPage.ToString());
+            sqlQuery.AppendLine(sqlHeadS.ToString());
+            sqlQuery.AppendLine(sqlLineS.ToString());
+            result.message = DbHelperSQL.QueryCountOnly(sqlCount.ToString(), listParam).ToString();
+            var dataSet = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
+            var dataHead = ExtendMethod.ToDataList<RtGoodsDocInfo>(dataSet.Tables[0]);
+            var dataLine = ExtendMethod.ToDataList<RtGoodsDocLineInfo>(dataSet.Tables[1]);
+            Dictionary<long, List<RtGoodsDocLineInfo>> map = new Dictionary<long, List<RtGoodsDocLineInfo>>();
+            foreach (RtGoodsDocLineInfo line in dataLine)
             {
-                sqlQuery = sqlExcute;
+                if (map.ContainsKey(line.RtGoodsDoc))
+                {
+                    map[line.RtGoodsDoc].Add(line);
+                }
+                else
+                {
+                    map.Add(line.RtGoodsDoc, new List<RtGoodsDocLineInfo>() { line });
+                }
             }
-            result.message = DbHelperSQL.QueryCount(sqlExcute.ToString(), listParam).ToString();
-            var dataTable = DbHelperSQL.Query(sqlQuery.ToString(), listParam);
-            var data = ExtendMethod.ToDataList<RtGoodsDocInfo>(dataTable);
-            result.data = data;
+            foreach (RtGoodsDocInfo head in dataHead)
+            {
+                if (map.ContainsKey(head.ID))
+                {
+                    head.RtGoodsDocLines = map[head.ID];
+                }
+                else
+                {
+                    head.RtGoodsDocLines = new List<RtGoodsDocLineInfo>();
+                }
+            }
+            result.data = dataHead;
             return result;
         }
     }

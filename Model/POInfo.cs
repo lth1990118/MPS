@@ -54,6 +54,18 @@ namespace MPS.Model
     {
         public long PurchaseOrder { get; set; }
         /// <summary>
+        /// 子行id
+        /// </summary>
+        public long SubLineID { get; set; }
+        /// <summary>
+        /// 子行行号
+        /// </summary>
+        public int SubLineNo { get; set; }
+        /// <summary>
+        /// 子行行号
+        /// </summary>
+        public decimal TotalQty { get; set; }
+        /// <summary>
         /// 行id
         /// </summary>
         public long ID { get; set; }
