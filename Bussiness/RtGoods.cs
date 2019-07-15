@@ -55,7 +55,7 @@ namespace MPS.Bussiness
                 
                 RtGoodsLine.m_confirmQty = item.ConfirmQty;
                 RtGoodsLine.m_itemCode = item.ItemCode;
-                //RtGoodsLine.m_logisticsDocNo = item.LogisticsDocNo;
+                RtGoodsLine.m_pOShipLineID = item.POShipLineID;
                 RtGoodsLine.m_pOLineID = item.POLineID;
                 RtGoodsLine.m_pODocNo = item.PODocNo;
                 RtGoodsLine.m_rtGoodsDTO = RtGoodsDTOData;

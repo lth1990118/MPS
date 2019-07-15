@@ -1,7 +1,6 @@
 ﻿namespace www.ufida.org.EntityData
 {
     using System.Runtime.Serialization;
-
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.RtGoodsLineDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -15,6 +14,8 @@
         private string m_pODocNoField;
 
         private long m_pOLineIDField;
+
+        private long m_pOShipLineIDField;
 
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVRtGoodsDTOData m_rtGoodsDTOField;
 
@@ -67,6 +68,19 @@
             set
             {
                 this.m_pOLineIDField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long m_pOShipLineID
+        {
+            get
+            {
+                return this.m_pOShipLineIDField;
+            }
+            set
+            {
+                this.m_pOShipLineIDField = value;
             }
         }
 

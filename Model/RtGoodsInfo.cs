@@ -54,6 +54,10 @@ namespace MPS.Model
         /// </summary>
         public decimal ConfirmQty { get; set; }
         /// <summary>
+        /// 采购订单子行id
+        /// </summary>
+        public long POShipLineID { get; set; }
+        /// <summary>
         /// 采购订单行id
         /// </summary>
         public long POLineID { get; set; }
