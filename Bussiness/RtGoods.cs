@@ -46,6 +46,7 @@ namespace MPS.Bussiness
             RtGoodsDTOData.m_deliveryAddress = AddressCode;
             RtGoodsDTOData.m_supplierCode = rtGoodsInfo.SupplierCode;
 
+            RtGoodsDTOData.m_carpoolNo = rtGoodsInfo.CarpoolNo;
             RtGoodsDTOData.m_carCode = rtGoodsInfo.CarCode;
             RtGoodsDTOData.m_logisticsDocNo = rtGoodsInfo.LogisticsDocNo;
             List<UFIDAU9CustKukaMPSMPSSVRtGoodsLineDTOData> list = new List<UFIDAU9CustKukaMPSMPSSVRtGoodsLineDTOData>();
