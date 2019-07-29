@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -100,6 +101,50 @@ namespace MPS.Bussiness
             //var dataSet2 = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
             var dataHead = ExtendMethod.ToDataList<SOInfo>(dataSet.Tables[0]);
             var dataLine = ExtendMethod.ToDataList<SOLineInfo>(dataSet.Tables[1]);
+            Dictionary<long, List<SOLineInfo>> map = new Dictionary<long, List<SOLineInfo>>();
+            foreach (SOLineInfo line in dataLine)
+            {
+                if (map.ContainsKey(line.SOID))
+                {
+                    map[line.SOID].Add(line);
+                }
+                else
+                {
+                    map.Add(line.SOID, new List<SOLineInfo>() { line });
+                }
+            }
+            foreach (SOInfo head in dataHead)
+            {
+                if (map.ContainsKey(head.ID))
+                {
+                    head.SOLine = map[head.ID];
+                }
+                else
+                {
+                    head.SOLine = new List<SOLineInfo>();
+                }
+            }
+            result.data = dataHead;
+            return result;
+        }
+
+        public RetModel<List<SOInfo>> GetSOLineInfoV2(RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<SOInfo>> result = new RetModel<List<SOInfo>>();
+            result.code = "0";
+            result.message = "0";
+
+            DataSet ds = DbHelperSQL.ExecuteDataSet("kuka_basedata.dbo.Kuka_MPS_GetSO", new SqlParameter[] {
+                new SqlParameter("startTime",param.data.startTime==null?"":param.data.startTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
+                new SqlParameter("endTime",param.data.endTime==null?"":param.data.endTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
+                new SqlParameter("pageIndex",param.data.pageIndex),
+                new SqlParameter("pageSize",param.data.pageSize),
+                new SqlParameter("keyValue",param.data.keyValue==null?"":param.data.keyValue)
+            });
+            //var dataSet2 = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
+            result.message = ds.Tables[0].Rows[0][0].ToString();
+            var dataHead = ExtendMethod.ToDataList<SOInfo>(ds.Tables[1]);
+            var dataLine = ExtendMethod.ToDataList<SOLineInfo>(ds.Tables[2]);
             Dictionary<long, List<SOLineInfo>> map = new Dictionary<long, List<SOLineInfo>>();
             foreach (SOLineInfo line in dataLine)
             {

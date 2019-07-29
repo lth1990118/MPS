@@ -16,6 +16,7 @@ namespace MPS.Model
         public DateTime BusinessDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime ModifiedOn { get; set; }
+        public string Status { get; set; }
         public List<POLineInfo> POLines { get; set; }
 
     }
@@ -37,6 +38,7 @@ namespace MPS.Model
         public decimal OriginQty { get; set; }
         public DateTime? OriginDeliveryDate { get; set; }
         public DateTime? DeliveryDate { get; set; }
+        public string Status { get; set; }
 
     }
 

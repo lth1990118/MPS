@@ -162,5 +162,53 @@ namespace MPS.Custom
                 }
             }
         }
+
+        /// <summary>
+        /// 执行查询语句，返回DataSet
+        /// </summary>
+        /// <param name="cmdType"></param>
+        /// <param name="cmdText"></param>
+        /// <param name="commandParameters"></param>
+        /// <returns>DataSet</returns>
+        public static DataSet ExecuteDataSet( string cmdText, params SqlParameter[] commandParameters)
+        {
+            DataSet ds = new DataSet();
+            SqlCommand cmd = new SqlCommand();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                PrepareCommand(cmd, connection, null, CommandType.StoredProcedure, cmdText, commandParameters);
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                adapter.Fill(ds);
+                cmd.Parameters.Clear();
+            }
+            return ds;
+        }
+        /// <summary>
+        /// 为执行命令准备参数
+        /// </summary>
+        /// <param name="cmd">SqlCommand 命令</param>
+        /// <param name="conn">已经存在的数据库连接</param>
+        /// <param name="trans">数据库事物处理</param>
+        /// <param name="cmdType">SqlCommand命令类型 (存储过程， T-SQL语句， 等等。)</param>
+        /// <param name="cmdText">Command text，T-SQL语句 例如 Select * from Products</param>
+        /// <param name="cmdParms">返回带参数的命令</param>
+        private static void PrepareCommand(SqlCommand cmd, SqlConnection conn, SqlTransaction trans, CommandType cmdType, string cmdText, SqlParameter[] cmdParms)
+        {
+            if (conn.State != ConnectionState.Open) // 判断数据库连接状态
+                conn.Open();
+
+            cmd.Connection = conn;
+            cmd.CommandType = cmdType;
+            cmd.CommandText = cmdText;
+
+            if (trans != null) // 判断是否需要事物处理
+                cmd.Transaction = trans;
+
+            if (cmdParms != null)
+            {
+                foreach (SqlParameter parm in cmdParms)
+                    cmd.Parameters.Add(parm);
+            }
+        }
     }
 }

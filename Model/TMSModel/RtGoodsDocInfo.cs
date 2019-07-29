@@ -35,8 +35,12 @@ namespace MPS.Model.TMSModel
         /// </summary>
         public string SendAddressName { get; set; }
         public string SendAddressCode { get; set; }
+        public DateTime? ConfirmDate { get; set; }
+        public string LogisticsDocNo { get; set; }
 
         public List<RtGoodsDocLineInfo> RtGoodsDocLines { get; set; }
+
+       
     }
     public class RtGoodsDocLineInfo
     {
@@ -51,5 +55,8 @@ namespace MPS.Model.TMSModel
         /// 回货计划确认数量
         /// </summary>
         public string PlanQty { get; set; }
+
+        public decimal TotalVolume { get; set; }
+        public decimal TotalWeight { get; set; }
     }
 }

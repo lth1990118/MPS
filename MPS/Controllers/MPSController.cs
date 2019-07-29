@@ -16,6 +16,7 @@ namespace MPS.Controllers
     public class MPSController : ApiController
     {
         [HttpPost]
+        [ActionFilter]
         public object AddressInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
         
@@ -25,6 +26,7 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
+        [ActionFilter]
         public object ItemInfo([FromBody]RecModel<ItemInfoQuery> param) {
             RetModel<List<ItemInfo>> retModel = new RetModel<List<ItemInfo>>();
             Bussiness.ItemMaster ItemMaster = new Bussiness.ItemMaster();
@@ -32,6 +34,7 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
+        [ActionFilter]
         public object SupplierInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SupplierInfo>> retModel = new RetModel<List<SupplierInfo>>();
@@ -41,6 +44,7 @@ namespace MPS.Controllers
         }
 
         [HttpPost]
+        [ActionFilter]
         public object SupplySourceInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SupplySourceInfo>> retModel = new RetModel<List<SupplySourceInfo>>();
@@ -49,6 +53,7 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
+        [ActionFilter]
         public object ASNInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<ASNInfo>> retModel = new RetModel<List<ASNInfo>>();
@@ -57,6 +62,7 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
+        [ActionFilter]
         public object SOInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SOInfo>> retModel = new RetModel<List<SOInfo>>();
@@ -64,8 +70,18 @@ namespace MPS.Controllers
             retModel = SO.GetSOLineInfo(param);
             return retModel;
         }
+        [HttpPost]
+        [ActionFilter]
+        public object SOInfoV2([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<SOInfo>> retModel = new RetModel<List<SOInfo>>();
+            Bussiness.SO SO = new Bussiness.SO();
+            retModel = SO.GetSOLineInfoV2(param);
+            return retModel;
+        }
 
         [HttpPost]
+        [ActionFilter]
         public object CreatePO([FromBody]RecModel<CreatePODto> param)
         {
             RetModel<PODto> retModel = new RetModel<PODto>();
@@ -80,6 +96,7 @@ namespace MPS.Controllers
             }
             return retModel;
         }
+        [ActionFilter]
         [HttpPost]
         public object POInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
@@ -102,6 +119,7 @@ namespace MPS.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpPost]
+        [ActionFilter]
         public object JCPOInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<JCPOInfo>> retModel = new RetModel<List<JCPOInfo>>();
@@ -123,6 +141,7 @@ namespace MPS.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpPost]
+        [ActionFilter]
         public object CreateRtGoods([FromBody]RecModel<RtGoodsInfo> param)
         {
             RetModel<string> retModel = new RetModel<string>();
