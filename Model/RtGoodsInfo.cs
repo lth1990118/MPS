@@ -66,5 +66,14 @@ namespace MPS.Model
         /// </summary>
         public string PODocNo { get; set; }
 
+        /// <summary>
+        /// 总体积
+        /// </summary>
+        public decimal TotalVolume { get; set; }
+        /// <summary>
+        /// 总重量
+        /// </summary>
+        public decimal TotalWeight { get; set; }
+
     }
 }

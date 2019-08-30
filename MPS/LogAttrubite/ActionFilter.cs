@@ -13,43 +13,51 @@ public class ActionFilter : ActionFilterAttribute
     private LogHelper log;
     public override void OnActionExecuting(HttpActionContext actionContext)
     {
-        
-        Random random = new Random(Guid.NewGuid().GetHashCode());
-        RondomNum = random.Next(1000);
-        Stopwatch stopWatch = new Stopwatch();
+        try
+        {
+            Random random = new Random(Guid.NewGuid().GetHashCode());
+            RondomNum = random.Next(1000);
+            Stopwatch stopWatch = new Stopwatch();
 
-        actionContext.Request.Properties[Key] = stopWatch;
+            actionContext.Request.Properties[Key] = stopWatch;
 
-        string url = actionContext.Request.RequestUri.AbsoluteUri;
-        string actionName = actionContext.ActionDescriptor.ActionName;
-        string argument = Newtonsoft.Json.JsonConvert.SerializeObject(actionContext.ActionArguments);
+            string url = actionContext.Request.RequestUri.AbsoluteUri;
+            string actionName = actionContext.ActionDescriptor.ActionName;
+            string argument = Newtonsoft.Json.JsonConvert.SerializeObject(actionContext.ActionArguments);
 
-        log = LogFactory.GetLogger("loginfo");
-        log.Info("[" + RondomNum + "]  " + url + "\r\n 参数：" + argument);
-        stopWatch.Start();
-
+            log = LogFactory.GetLogger("loginfo");
+            log.Info("[" + RondomNum + "]  " + url + "\r\n 参数：" + argument);
+            stopWatch.Start();
+        }
+        catch {
+        }
 
     }
     public override void OnActionExecuted(HttpActionExecutedContext actionExecutedContext)
     {
-
-        Stopwatch stopWatch = actionExecutedContext.Request.Properties[Key] as Stopwatch;
-
-        if (stopWatch != null)
+        try
         {
+            Stopwatch stopWatch = actionExecutedContext.Request.Properties[Key] as Stopwatch;
 
-            stopWatch.Stop();
-            object obj = new object();
-            var a = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>();
-            if (!a.IsFaulted)
+            if (stopWatch != null)
             {
-                // 取得由 API 返回的资料
-                obj = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>().Result;
+
+                stopWatch.Stop();
+                object obj = new object();
+                var a = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>();
+                if (!a.IsFaulted)
+                {
+                    // 取得由 API 返回的资料
+                    obj = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>().Result;
+                }
+                //结果转为自定义消息格式
+                //string json = string.Empty;//JsonHelper.Serialize(obj);
+                //log = LogFactory.GetLogger("loginfo");
+                //log.Info("[" + RondomNum + "]  耗时：" + stopWatch.Elapsed.ToString() + "\r\n 返回：" + json);
             }
-            //结果转为自定义消息格式
-            string json = JsonHelper.Serialize(obj);
-            log = LogFactory.GetLogger("loginfo");
-            log.Info("[" + RondomNum + "]  耗时：" + stopWatch.Elapsed.ToString() + "\r\n 返回：" + json);
+        }
+        catch {
+
         }
     }
 }

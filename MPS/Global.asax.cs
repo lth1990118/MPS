@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MPS.LogAttrubite;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace MPS
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
             log4net.Config.XmlConfigurator.Configure(new FileInfo(Server.MapPath("~") + @"\log4net.config"));
+            GlobalConfiguration.Configuration.Filters.Add(new WebApiExceptionFilterAttribute());
+            GlobalConfiguration.Configuration.Filters.Add(new ActionFilter());
         }
     }
 }

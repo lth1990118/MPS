@@ -17,7 +17,7 @@ namespace MPS.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [ActionFilter]
+        [HttpPost]
         public object InsertReqInfo(RecModel<List<TMSReqInfo>> param)
         {
             RetModel<String> retModel = new RetModel<String>();
@@ -38,7 +38,6 @@ namespace MPS.Controllers
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
-        [ActionFilter]
         [HttpPost]
         public object RtGoodsDocInfo(RecModel<ItemInfoQuery> param)
         {

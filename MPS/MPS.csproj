@@ -115,11 +115,14 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="LogAttrubite\ActionFilter.cs" />
+    <Compile Include="LogAttrubite\ExceptionFilterAttribute.cs" />
     <Compile Include="LogAttrubite\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="log4net.config" />
+    <Content Include="log4net.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Web.Debug.config">

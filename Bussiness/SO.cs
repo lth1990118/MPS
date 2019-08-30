@@ -28,6 +28,8 @@ namespace MPS.Bussiness
         private string sqlSOPage = "  select ROW_NUMBER() over(order by so.id)as rownum,so.id  from( select distinct(so.id) as id from  kuka_basedata.dbo.v_kuka_OrderMonitorSO_nx1 nx inner join dbo.SM_SO so on so.docno= nx.销售订单号  where 销售订单行状态 in ('审核','自然关闭') and 销售订单下单日期>='2018-01-01' and(料品 like '91.%' or 料品 like '07.%') {0} ) so";
         private string sqlHead = "  select so.id,ot.Name as Org,so.docno,so.OrderBy_Code as CustomerCode,so.OrderBy_ShortName as CustomerName,so.BusinessDate as BussinessDate,so.CreatedBy,#temp.销售订单审核日期 as ModifiedOn  from  (select distinct(so.id) as id,nx.销售订单审核日期  from kuka_basedata.dbo.v_kuka_OrderMonitorSO_nx1 nx inner join dbo.SM_SO so on so.docno= nx.销售订单号 where 销售订单行状态 in ('审核','自然关闭') and 销售订单下单日期>='2018-01-01' and(料品 like '91.%' or 料品 like '07.%') {0} ) #temp inner join dbo.SM_SO so on so.id=#temp.id left join Base_Organization_Trl ot on ot.id=so.org where 1=1 ";
         private string sqlLine = "select sl.id ,t.name as LineType,(case sl.status when 0 then '草稿' when 1 then '开立' when 2 then '审核中'  	when 3 then '审核' when 4 then '自然关闭' when 5 then '短缺关闭'  	when 6 then '超额关闭' else '' end)as Status,im.code as ItemCode,ca.ID as StockCategory,ca.code as StockCategoryCode  ,cat.name as StockCategoryName,im.NameSegment1,im.SPECS,uomt.name as SOUOM,sl.DocLineNo as DocLineNo,sl.OrderByQtyPU as OrderByQtyCU,shl.RequireDate as DeliveryDate,shl.SOShipLineSumInfo_SumShipedQtyPU as SalesOutQuantity,sl.OrderByQtyPU-shl.SOShipLineSumInfo_SumShipedQtyPU as SalesInQuantity,(case when sl.OrderByQtyPU - shl.SOShipLineSumInfo_SumShipedQtyPU = 0 then '全部出货' when shl.SOShipLineSumInfo_SumShipedQtyPU > 0 then '部分出库' else '未出货' end) as SalesOutStatus, sl.FinallyPriceTC as SalesPrice,sl.TotalMoneyTC as SalesAmount,t2.name as Base,sl.ModifiedOn,so.id as SOID from kuka_basedata.dbo.v_kuka_OrderMonitorSO_nx1 nx inner join dbo.SM_SO so on so.docno= nx.销售订单号 left join dbo.Base_Organization o on o.id= so.org       left join dbo.Base_Organization_Trl ot on ot.id= o.id   inner join  dbo.SM_SOLine sl  on sl.SO= SO.id and so.DocNo+'.'+ cast(sl.DocLineNo as varchar(50))=nx.销售订单行号 left join dbo.SM_SOShipline shl on shl.SOLine= sl.id and shl.ItemInfo_ItemID= sl.ItemInfo_ItemID left join (select dv.code, dvt.name from dbo.Base_DefineValue dv left join dbo.Base_DefineValue_Trl dvt on dv.id= dvt.id  left join dbo.Base_ValueSetDef vsd on vsd.id= dv.ValueSetDef where vsd.code= 'MO_hlx') t on t.code=sl.DescFlexField_PubDescSeg14 left join dbo.CBO_ItemMaster im on im.id= sl.ItemInfo_ItemID     left join dbo.CBO_Category ca on ca.id= im.StockCategory         left join dbo.CBO_Category_trl cat on cat.id= im.StockCategory       left join dbo.Base_UOM_trl uomt on uomt.id= sl.TU        left join (select dv.code, dvt.name from dbo.Base_DefineValue dv left join dbo.Base_DefineValue_Trl dvt on dv.id= dvt.id  left join dbo.Base_ValueSetDef vsd on vsd.id= dv.ValueSetDef where vsd.code= 'G007') t2 on t2.code=sl.DescFlexField_PrivateDescSeg22 where 1=1 and 销售订单下单日期>='2018-01-01'  and  (sl.ItemInfo_ItemCode like '91.%' or sl.ItemInfo_ItemCode like '07.%')";
+        
+
         public RetModel<List<SOInfo>> GetSOLineInfo(RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SOInfo>> result = new RetModel<List<SOInfo>>();
@@ -169,6 +171,56 @@ namespace MPS.Bussiness
                 }
             }
             result.data = dataHead;
+            return result;
+        }
+
+        private string sql = "select ROW_NUMBER() over(order by solog.Createdon)as rownum,solog.SOID,solog.CreatedOn as DeletedOn,solog.CreatedBy as DeletedBy,solog.OrgCode,solog.DocNo  from kuka_sodeletelog solog where 1=1";
+        public RetModel<List<SODeleteLogInfo>> GetSODeleteLog(RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<SODeleteLogInfo>> result = new RetModel<List<SODeleteLogInfo>>();
+            result.code = "0";
+            result.message = "0";
+
+            List<SqlParameter> listParam = new List<SqlParameter>();
+            StringBuilder sqlQuery = new StringBuilder();
+            StringBuilder sqlExcute = new StringBuilder(this.sql);
+            if (param.data != null)
+            {
+                if (param.data.startTime.HasValue)
+                {
+                    sqlExcute.Append(" and solog.CreatedOn>@startTime");
+                    listParam.Add(new SqlParameter("startTime", param.data.startTime));
+                }
+                if (param.data.endTime.HasValue)
+                {
+                    sqlExcute.Append(" and solog.CreatedOn<=@endTime");
+                    listParam.Add(new SqlParameter("endTime", param.data.endTime));
+                }
+                if (!string.IsNullOrEmpty(param.data.keyValue))
+                {
+                    sqlExcute.Append(" and solog.DocNo=@keyValue");
+                    listParam.Add(new SqlParameter("keyValue", param.data.keyValue));
+                }
+                sqlQuery.Append("select * from (");
+                sqlQuery.Append(sqlExcute);
+                sqlQuery.Append(") t");
+
+                if (param.data.pageSize != 0)
+                {
+                    sqlQuery.Append(" where rownum>@skip and rownum<=@Take");
+                    listParam.Add(new SqlParameter("skip", param.data.pageIndex * param.data.pageSize));
+                    listParam.Add(new SqlParameter("Take", (param.data.pageIndex + 1) * param.data.pageSize));
+                }
+            }
+            else
+            {
+                sqlQuery = sqlExcute;
+            }
+            result.message = DbHelperSQL.QueryCount(sqlExcute.ToString(), listParam).ToString();
+            var dataTable = DbHelperSQL.Query(sqlQuery.ToString(), listParam);
+            var data = ExtendMethod.ToDataList<SODeleteLogInfo>(dataTable);
+
+            result.data = data;// ConvertDtToDatable.TableToResult<ItemInfo>(dataTable);
             return result;
         }
     }

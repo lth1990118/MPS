@@ -16,7 +16,6 @@ namespace MPS.Controllers
     public class MPSController : ApiController
     {
         [HttpPost]
-        [ActionFilter]
         public object AddressInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
         
@@ -26,7 +25,6 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
-        [ActionFilter]
         public object ItemInfo([FromBody]RecModel<ItemInfoQuery> param) {
             RetModel<List<ItemInfo>> retModel = new RetModel<List<ItemInfo>>();
             Bussiness.ItemMaster ItemMaster = new Bussiness.ItemMaster();
@@ -34,7 +32,6 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
-        [ActionFilter]
         public object SupplierInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SupplierInfo>> retModel = new RetModel<List<SupplierInfo>>();
@@ -44,7 +41,6 @@ namespace MPS.Controllers
         }
 
         [HttpPost]
-        [ActionFilter]
         public object SupplySourceInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SupplySourceInfo>> retModel = new RetModel<List<SupplySourceInfo>>();
@@ -53,7 +49,6 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
-        [ActionFilter]
         public object ASNInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<ASNInfo>> retModel = new RetModel<List<ASNInfo>>();
@@ -71,7 +66,6 @@ namespace MPS.Controllers
             return retModel;
         }
         [HttpPost]
-        [ActionFilter]
         public object SOInfoV2([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<SOInfo>> retModel = new RetModel<List<SOInfo>>();
@@ -81,36 +75,34 @@ namespace MPS.Controllers
         }
 
         [HttpPost]
-        [ActionFilter]
         public object CreatePO([FromBody]RecModel<CreatePODto> param)
         {
             RetModel<PODto> retModel = new RetModel<PODto>();
-            try
-            {
+            //try
+            //{
                 Bussiness.PO PO = new Bussiness.PO();
                 retModel = PO.CreatePO(param);
-            }
-            catch (Exception e){
-                retModel.message = Common.GetExceptionMessage(e);
-                retModel.code = "-1";
-            }
+            //}
+            //catch (Exception e){
+            //    retModel.message = Common.GetExceptionMessage(e);
+            //    retModel.code = "-1";
+            //}
             return retModel;
         }
-        [ActionFilter]
         [HttpPost]
         public object POInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<POInfo>> retModel = new RetModel<List<POInfo>>();
-            try
-            {
+            //try
+            //{
                 Bussiness.PO PO = new Bussiness.PO();
                 retModel = PO.GetPOInfo(param);
-            }
-            catch (Exception e)
-            {
-                retModel.message = Common.GetExceptionMessage(e);
-                retModel.code = "-1";
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    retModel.message = Common.GetExceptionMessage(e);
+            //    retModel.code = "-1";
+            //}
             return retModel;
         }
         /// <summary>
@@ -119,20 +111,19 @@ namespace MPS.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpPost]
-        [ActionFilter]
         public object JCPOInfo([FromBody]RecModel<ItemInfoQuery> param)
         {
             RetModel<List<JCPOInfo>> retModel = new RetModel<List<JCPOInfo>>();
-            try
-            {
+            //try
+            //{
                 Bussiness.PO PO = new Bussiness.PO();
                 retModel = PO.GetJCPOInfo(param);
-            }
-            catch (Exception e)
-            {
-                retModel.message = Common.GetExceptionMessage(e);
-                retModel.code = "-1";
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    retModel.message = Common.GetExceptionMessage(e);
+            //    retModel.code = "-1";
+            //}
             return retModel;
         }
         /// <summary>
@@ -141,12 +132,11 @@ namespace MPS.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpPost]
-        [ActionFilter]
         public object CreateRtGoods([FromBody]RecModel<RtGoodsInfo> param)
         {
             RetModel<string> retModel = new RetModel<string>();
-            try
-            {
+            //try
+            //{
                 if (string.IsNullOrEmpty(param.data.DeliveryAddress)) {
                     throw new Exception("送货地址字段不能为空");
                 }
@@ -160,12 +150,26 @@ namespace MPS.Controllers
                 }
                 Bussiness.RtGoods RtGoods = new Bussiness.RtGoods();
                 retModel = RtGoods.CreateRtGoods(param);
-            }
-            catch (Exception e)
-            {
-                retModel.message = Common.GetExceptionMessage(e);
-                retModel.code = "-1";
-            }
+            //}
+            //catch (Exception e)
+            //{
+            //    retModel.message = Common.GetExceptionMessage(e);
+            //    retModel.code = "-1";
+            //}
+            return retModel;
+        }
+
+        /// <summary>
+        /// 创建回货计划
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object SODeleteLog([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<SODeleteLogInfo>> retModel = new RetModel<List<SODeleteLogInfo>>();
+            Bussiness.SO SO = new Bussiness.SO();
+            retModel = SO.GetSODeleteLog(param);           
             return retModel;
         }
     }

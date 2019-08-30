@@ -37,6 +37,10 @@ namespace MPS.Model.TMSModel
         public string SendAddressCode { get; set; }
         public DateTime? ConfirmDate { get; set; }
         public string LogisticsDocNo { get; set; }
+        /// <summary>
+        /// 未审状态-1 已审状态-2  取消状态-3 自动关闭-4  手动关闭-5 
+        /// </summary>
+        public int Status { get; set; }
 
         public List<RtGoodsDocLineInfo> RtGoodsDocLines { get; set; }
 
@@ -45,6 +49,7 @@ namespace MPS.Model.TMSModel
     public class RtGoodsDocLineInfo
     {
         public long RtGoodsDoc { get; set; }
+        public long ID { get; set; }
         /// <summary>
         /// 料品
         /// </summary>

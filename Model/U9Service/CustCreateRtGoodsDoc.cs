@@ -19,6 +19,10 @@
 
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVRtGoodsDTOData m_rtGoodsDTOField;
 
+        private decimal m_totalVolumeField;
+
+        private decimal m_totalWeightField;
+
         [System.Runtime.Serialization.DataMemberAttribute()]
         public decimal m_confirmQty
         {
@@ -96,8 +100,33 @@
                 this.m_rtGoodsDTOField = value;
             }
         }
-    }
 
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public decimal m_totalVolume
+        {
+            get
+            {
+                return this.m_totalVolumeField;
+            }
+            set
+            {
+                this.m_totalVolumeField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public decimal m_totalWeight
+        {
+            get
+            {
+                return this.m_totalWeightField;
+            }
+            set
+            {
+                this.m_totalWeightField = value;
+            }
+        }
+    }
 
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]

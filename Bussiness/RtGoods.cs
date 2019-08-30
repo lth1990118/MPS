@@ -60,6 +60,8 @@ namespace MPS.Bussiness
                 RtGoodsLine.m_pOLineID = item.POLineID;
                 RtGoodsLine.m_pODocNo = item.PODocNo;
                 RtGoodsLine.m_rtGoodsDTO = RtGoodsDTOData;
+                RtGoodsLine.m_totalVolume = item.TotalVolume;
+                RtGoodsLine.m_totalWeight = item.TotalWeight;
                 list.Add(RtGoodsLine);
             }
             RtGoodsDTOData.m_rtGoodsLines = list.ToArray();

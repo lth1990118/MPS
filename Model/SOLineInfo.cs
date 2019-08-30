@@ -134,4 +134,12 @@ namespace MPS.Model
         public decimal SalesAmount { get; set; }
 
     }
+    
+    public class SODeleteLogInfo {
+        public long SOID { get; set; }
+        public DateTime DeletedOn { get; set; }
+        public string DeletedBy { get; set; }
+        public string DocNo { get; set; }
+        public string OrgCode { get; set; }
+    }
 }
