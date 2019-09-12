@@ -136,7 +136,7 @@ namespace MPS.Bussiness
             result.code = "0";
             result.message = "0";
 
-            DataSet ds = DbHelperSQL.ExecuteDataSet("kuka_basedata.dbo.Kuka_MPS_GetSO", new SqlParameter[] {
+            DataSet ds = DbHelperSQL.ExecuteDataSet("kuka_basedata.dbo.Kuka_MPS_GetSO_nx", new SqlParameter[] {
                 new SqlParameter("startTime",param.data.startTime==null?"":param.data.startTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
                 new SqlParameter("endTime",param.data.endTime==null?"":param.data.endTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
                 new SqlParameter("pageIndex",param.data.pageIndex),
