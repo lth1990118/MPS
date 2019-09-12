@@ -17,10 +17,10 @@ namespace MPS.Bussiness
 {
     public class PO
     {
-        public RetModel<PODto> CreatePO(RecModel<CreatePODto> param)
+        public RetModel<object> CreatePO(RecModel<CreatePODto> param)
         {
             CreatePODto createPODto = param.data;
-            RetModel<PODto> Result = new RetModel<PODto>();
+            RetModel<object> Result = new RetModel<object>();
             Result.code = "0";
             Result.message = "0";
             #region 创建采购订单
@@ -30,36 +30,62 @@ namespace MPS.Bussiness
             //poDtoData.m_pOLines = new www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOLineDTOData[];
             //UFIDAU9CustKukaMPSMPSSVPOLineDTOData test = new UFIDAU9CustKukaMPSMPSSVPOLineDTOData();
            List<www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOLineDTOData> poLines=new List<UFIDAU9CustKukaMPSMPSSVPOLineDTOData>();
-           
+            List<CreatePOLineDto> listUnValidate = new List<CreatePOLineDto>();
             foreach (var item in createPODto.POLines)
             {
-                var dataTable = DbHelperSQL.Query("select ID,Code,Name from dbo.CBO_ItemMaster im where im.code=@Code", new List<System.Data.SqlClient.SqlParameter>() { new System.Data.SqlClient.SqlParameter("Code", item.ItemCode) });
+                StringBuilder builder = new StringBuilder();
+                #region 料品检查               
+                var dataTable = DbHelperSQL.Query("select ID,Code,Name from dbo.CBO_ItemMaster im where im.code=@Code and im.Effective_IsEffective=1 and im.Effective_EffectiveDate<=GETDATE() and im.Effective_DisableDate>=GETDATE()", new List<System.Data.SqlClient.SqlParameter>() { new System.Data.SqlClient.SqlParameter("Code", item.ItemCode) });
                 if (dataTable.Rows.Count == 0)
                 {
-                    throw new Exception($"料号{item.ItemCode}不存在!");
+                    //throw new Exception($"料号{item.ItemCode}不存在或失效!");
+                    builder.AppendLine($"料号{item.ItemCode}不存在或失效!");
+                    //item.ErrorMsg = $"料号{item.ItemCode}不存在或失效!";
+                    //listUnValidate.Add(item);
                 }
+                #endregion
+
+                #region 厂商价目表检查
+
+                var dataTablePPR = DbHelperSQL.Query("select pp.Supplier,ppl.ItemInfo_ItemCode,pp.Code as PPRCode, ppl.FromDate, ppl.ToDate, ppl.DocLineNo, ppl.Price, im.code as ItemCode, im2.code as BOMCode from PPR_PurPriceList pp inner join CBO_Supplier s on s.id = pp.supplier left join PPR_PurPriceLine ppl on ppl.PurPriceList = pp.id left join(select code, id from CBO_ItemMaster where code = @ItemCode)im on im.id = ppl.iteminfo_itemid left join(select im2.code as Code,im2.id as ID from CBO_BOMMaster bm left join CBO_BOMComponent bc on bc.BOMMaster = bm.id left join CBO_ItemMaster im on im.id = bm.itemmaster left join CBO_ItemMaster im2 on im2.id = bc.itemmaster where im.code = @ItemCode and bc.IsEffective = 1 and bc.EffectiveDate <= GETDATE() and bc.DisableDate >= GETDATE()) im2 on im2.ID = ppl.iteminfo_itemid where s.code = @SupplierCode and(im.code is not null or im2.code is not null) and ppl.FromDate <= GETDATE() and ppl.ToDate >= GETDATE() and ppl.Active=1", new List<System.Data.SqlClient.SqlParameter>() { new System.Data.SqlClient.SqlParameter("ItemCode", item.ItemCode), new System.Data.SqlClient.SqlParameter("SupplierCode", poDtoData.m_supplier_Code) });
+                if (dataTablePPR.Rows.Count == 0)
+                {
+                    //throw new Exception($"料号{item.ItemCode}没有维护厂商价目表或失效!"); 
+                    builder.AppendLine($"供应商{poDtoData.m_supplier_Code}和料号{item.ItemCode}没有维护厂商价目表或失效!");
+                }
+                #endregion
+                if (!builder.IsNullOrEmpty())
+                {
+                    item.ErrorMsg = builder.ToString();
+                    listUnValidate.Add(item);
+                    continue;
+                }
+
                 www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOLineDTOData poLine = new www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOLineDTOData()
                 {
                     m_deliveryDate = item.DeliveryDate,
                     m_orderQty = item.OrderQty,
                     m_itemCode = item.ItemCode,
                     m_remark = item.Remark,
-                    m_srcDocNo = item.SrcDocNo,
-                    m_createPODTO = poDtoData
+                    m_srcDocNo = item.SrcDocNo,                    
+                    m_createPODTO = poDtoData,
+                    m_srcDoc=item.SrcDoc,
+                    m_srcDocLine=item.SrcDocLine,
+                    m_srcDocLineNo=item.SrcDocLineNo
                 };
-                poLines.Add(poLine);                
+                poLines.Add(poLine);
             }
             poDtoData.m_pOLines = poLines.ToArray();
             www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVCreatePODTOData[] pOList = new www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVCreatePODTOData[] { poDtoData };
 
             ThreadContext context = Common.CreateContextObj();
-            string sqlSupplier = "select o.id,o.code from dbo.CBO_Supplier s left join dbo.Base_Organization o on o.id = s.org where s.code = @Code";
+            string sqlSupplier = "select o.id,o.code from dbo.CBO_Supplier s left join dbo.Base_Organization o on o.id = s.org where s.code = @Code and s.Effective_IsEffective=1 and s.Effective_EffectiveDate<=GETDATE() and s.Effective_DisableDate>=GETDATE()";
             List<SqlParameter> listParam = new List<SqlParameter>();
             listParam.Add(new SqlParameter("Code", poDtoData.m_supplier_Code));
             var dataTableSupplier = DbHelperSQL.Query(sqlSupplier, listParam);
             if (dataTableSupplier.Rows.Count == 0)
             {
-                throw new Exception("没有对应编码的供应商！");
+                throw new Exception("没有对应编码的供应商或失效！");
             }
             else {
                 context.nameValueHas["OrgID"] = Convert.ToInt64(dataTableSupplier.Rows[0]["id"]);
@@ -68,11 +94,15 @@ namespace MPS.Bussiness
             www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPODataData result2 = Client.Do(context, poDtoData, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages);
             //Client.Do(new DoResponse());
             #endregion
-            Result.data = new PODto()
+            Result.data = new
             {
-                DeliveryDate = result2.m_deliverDate,
-                PODocNo = result2.m_docNo,
-                Supplier_Code = result2.m_supplier
+                POInfo = new PODto()
+                {
+                    DeliveryDate = result2.m_deliverDate,
+                    PODocNo = result2.m_docNo,
+                    Supplier_Code = result2.m_supplier
+                },
+                ErrorLine = listUnValidate
             };
             return Result;
         }
@@ -229,7 +259,7 @@ namespace MPS.Bussiness
             #region 采购行其他信息（杭州当月入库、河北当月入库、累计入库、杭州在途、河北在途、河北已排未发、杭州已排未发、该行订单累计杭州入库、该行订单累计河北入库）
 
 
-            string strInv = $" declare @year int,@month int; set @year=year(GETDATE()); set @month=month(GETDATE()); select psl.id ,sum(rcvl.RcvQtyPU) as TotalInv ,sum(case when wh.DescFlexField_PubDescSeg2='001' or wht.Name not like '%河北%' then rcvl.RcvQtyPU else 0 end) as HZTotalInv ,sum(case when wh.DescFlexField_PubDescSeg2='002' or wht.Name like '%河北%' then rcvl.RcvQtyPU else 0 end) as HBTotalInv ,sum(case when year(rcv.ApprovedOn)=@year and month(rcv.ApprovedOn)=@month then rcvl.RcvQtyPU else 0 end) as TotalCurrentMonthInv ,sum(case when year(rcv.ApprovedOn)=@year and month(rcv.ApprovedOn)=@month and (wh.DescFlexField_PubDescSeg2='001' or wht.Name not like '%河北%') then rcvl.RcvQtyPU else 0 end) as HZCurrentMonthInv ,sum(case when year(rcv.ApprovedOn)=@year and month(rcv.ApprovedOn)=@month and (wh.DescFlexField_PubDescSeg2='002'or wht.Name like '%河北%') then rcvl.RcvQtyPU else 0 end) as HBCurrentMonthInv into #tempInv from dbo.PM_Receivement rcv left join dbo.PM_RcvLine rcvl on rcv.id = rcvl.Receivement left join dbo.Base_Organization_Trl ot on ot.id = rcv.Org Inner join dbo.PM_POShipLine psl on psl.id = rcvl.SrcDoc_SrcDocSubline_EntityID  Inner join dbo.pm_poline pl on pl.id = psl.poline  left join dbo.PM_PurchaseOrder po on po.id = pl.PurchaseOrder left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.cbo_itemmaster im on im.id = rcvl.ItemInfo_ItemID left join dbo.Base_UOM_Trl uomt on uomt.id = rcvl.StoreUOM  left join dbo.CBO_Supplier_trl st on st.id = rcv.Supplier_Supplier  left join dbo.cbo_wh_trl wht on wht.id = rcvl.wh left join dbo.cbo_wh wh on wh.id = rcvl.wh where ot.id in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and  (rcvl.ItemInfo_ItemCode like '91.%' or rcvl.ItemInfo_ItemCode like '07.%') and len(rcvl.ItemInfo_ItemCode)<=12  and pl.status>=2 and rcv.ApprovedOn<cast(GETDATE() as date)   {sqlParam} group by psl.id";
+            string strInv = $" declare @year int,@month int; set @year=year(GETDATE()-1); set @month=month(GETDATE()-1); select psl.id ,sum(rcvl.RcvQtyPU) as TotalInv ,sum(case when wh.DescFlexField_PubDescSeg2='001' or wht.Name not like '%河北%' then rcvl.RcvQtyPU else 0 end) as HZTotalInv ,sum(case when wh.DescFlexField_PubDescSeg2='002' or wht.Name like '%河北%' then rcvl.RcvQtyPU else 0 end) as HBTotalInv ,sum(case when year(rcv.ApprovedOn)=@year and month(rcv.ApprovedOn)=@month then rcvl.RcvQtyPU else 0 end) as TotalCurrentMonthInv ,sum(case when year(rcv.ApprovedOn)=@year and month(rcv.ApprovedOn)=@month and (wh.DescFlexField_PubDescSeg2='001' or wht.Name not like '%河北%') then rcvl.RcvQtyPU else 0 end) as HZCurrentMonthInv ,sum(case when year(rcv.ApprovedOn)=@year and month(rcv.ApprovedOn)=@month and (wh.DescFlexField_PubDescSeg2='002'or wht.Name like '%河北%') then rcvl.RcvQtyPU else 0 end) as HBCurrentMonthInv into #tempInv from dbo.PM_Receivement rcv left join dbo.PM_RcvLine rcvl on rcv.id = rcvl.Receivement left join dbo.Base_Organization_Trl ot on ot.id = rcv.Org Inner join dbo.PM_POShipLine psl on psl.id = rcvl.SrcDoc_SrcDocSubline_EntityID  Inner join dbo.pm_poline pl on pl.id = psl.poline  left join dbo.PM_PurchaseOrder po on po.id = pl.PurchaseOrder left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.cbo_itemmaster im on im.id = rcvl.ItemInfo_ItemID left join dbo.Base_UOM_Trl uomt on uomt.id = rcvl.StoreUOM  left join dbo.CBO_Supplier_trl st on st.id = rcv.Supplier_Supplier  left join dbo.cbo_wh_trl wht on wht.id = rcvl.wh left join dbo.cbo_wh wh on wh.id = rcvl.wh where ot.id in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and  (rcvl.ItemInfo_ItemCode like '91.%' or rcvl.ItemInfo_ItemCode like '07.%') and len(rcvl.ItemInfo_ItemCode)<=12  and pl.status>=2 and rcv.ApprovedOn<cast(GETDATE()-1 as date)   {sqlParam} group by psl.id";
         
             string strASN = $" SELECT  psl.id ,case when psl.status>2 then 0 else Sum(asnl.ShipQtyTU) end as TotalOnWay ,case when psl.status>2 then 0 else Sum(case when dvt.Name like '%杭州%' then asnl.ShipQtyTU else 0 end) end as HZOnWay ,case when psl.status > 2 then 0 else Sum(case when dvt.Name like '%河北%' then asnl.ShipQtyTU else 0 end) end as HBOnWay into #tempASN FROM dbo.PM_ASN AS asn  LEFT JOIN  dbo.PM_ASNLine AS asnl ON asn.ID = asnl.ASN  LEFT JOIN dbo.CBO_Supplier_Trl AS s ON s.ID = asn.Supplier_Supplier LEFT JOIN dbo.Base_ValueSetDef AS vsd ON vsd.Code = 'VP_KukaSendAddress'  LEFT JOIN dbo.Base_DefineValue AS dv ON dv.Code =asn.DescFlexField_PrivateDescSeg3 AND dv.ValueSetDef = vsd.ID  LEFT JOIN dbo.Base_DefineValue_Trl AS dvt ON dv.ID = dvt.ID Inner join dbo.PM_POShipLine psl on psl.id =asnl.SrcDocInfo_SrcDocSubline_EntityID  Inner join dbo.pm_poline pl on pl.id = psl.poline  LEFT JOIN dbo.PM_PurchaseOrder AS po ON po.ID = pl.PurchaseOrder left join dbo.PM_PODocType pot on pot.id = po.DocumentType WHERE(asnl.Status >= 2) and asnl.TotalRcvQtyTU = 0 and pl.status >= 2 and len(pl.ItemInfo_ItemCode)<= 12  {sqlParam} group by psl.id,psl.status";
             string strNoExpress = $"select rt.采购订单号,rt.采购订单行号 ,case when pl.status>2 then 0 else  Sum(rt.回货计划数量) end as TotalNoExpress ,case when pl.status > 2 then 0 else Sum(case when dvt.name like '%杭州%' then rt.回货计划数量 else 0 end) end as HZNoExpress ,case when pl.status > 2 then 0 else Sum(case when dvt.name like '%河北%' then rt.回货计划数量 else 0 end) end as HBNoExpress  into #tempNoExpress from [kuka_basedata].[dbo].[v_RtGoods] rt left join dbo.Kuka_VPT_RtGoodsDoc rd on rd.docno = rt.回货计划单号 LEFT JOIN dbo.Base_DefineValue_trl AS dvt ON dvt.id = rd.AddressRef left join dbo.PM_PurchaseOrder po on po.DocNo = rt.采购订单号 left join dbo.PM_POline pl on po.id = pl.PurchaseOrder and pl.DocLineNo = rt.采购订单行号 where rt.回货行状态 = '已审状态' and ASN单号 is null {sqlParam} group by rt.采购订单号,rt.采购订单行号,pl.status ";

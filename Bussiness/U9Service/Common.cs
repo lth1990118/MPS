@@ -98,7 +98,7 @@ namespace MPS.Bussiness.U9Service
                         // 错误信息在faultEx.Message中，请提取，
                         // 格式为"Fault:料品不能为空，请录入\n 在....."
                         int startIndex = serviceEx.Message.IndexOf(":");
-                        int endIndex = serviceEx.Message.IndexOf("\n");
+                        int endIndex = serviceEx.Message.Length-1;
                         if (endIndex == -1)
                             endIndex = serviceEx.Message.Length;
                         if (endIndex > 0 && endIndex > startIndex + 1)

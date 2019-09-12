@@ -2,9 +2,10 @@
 
 namespace www.ufida.org.EntityData
 {
-    using System.Runtime.Serialization;
 
-
+     using System.Runtime.Serialization;
+    
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.CreatePODTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -41,7 +42,6 @@ namespace www.ufida.org.EntityData
             }
         }
     }
-
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.POLineDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -57,6 +57,12 @@ namespace www.ufida.org.EntityData
         private decimal m_orderQtyField;
 
         private string m_remarkField;
+
+        private long m_srcDocField;
+
+        private long m_srcDocLineField;
+
+        private int m_srcDocLineNoField;
 
         private string m_srcDocNoField;
 
@@ -126,6 +132,45 @@ namespace www.ufida.org.EntityData
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public long m_srcDoc
+        {
+            get
+            {
+                return this.m_srcDocField;
+            }
+            set
+            {
+                this.m_srcDocField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long m_srcDocLine
+        {
+            get
+            {
+                return this.m_srcDocLineField;
+            }
+            set
+            {
+                this.m_srcDocLineField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int m_srcDocLineNo
+        {
+            get
+            {
+                return this.m_srcDocLineNoField;
+            }
+            set
+            {
+                this.m_srcDocLineNoField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string m_srcDocNo
         {
             get
@@ -190,5 +235,6 @@ namespace www.ufida.org.EntityData
             }
         }
     }
+
 
 }

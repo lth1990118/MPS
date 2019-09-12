@@ -11,7 +11,7 @@ namespace MPS.Model.API
         /// <summary>
         /// 供应商编码
         /// </summary>
-        public string Supplier_Code { get; set; }
+        public string Supplier_Code { get; set; }        
         /// <summary>
         /// 采购行信息
         /// </summary>
@@ -22,6 +22,18 @@ namespace MPS.Model.API
         /// 来源单号
         /// </summary>
         public string SrcDocNo { get; set; }
+        /// <summary>
+        /// 来源单ID
+        /// </summary>
+        public long SrcDoc { get; set; }
+        /// <summary>
+        /// 来源行号
+        /// </summary>
+        public int SrcDocLineNo { get; set; }
+        /// <summary>
+        /// 来源行ID
+        /// </summary>
+        public long SrcDocLine { get; set; }
         /// <summary>
         /// 料号
         /// </summary>
@@ -38,6 +50,10 @@ namespace MPS.Model.API
         /// 备注
         /// </summary>
         public string Remark { get; set; }
+        /// <summary>
+        /// 错误信息
+        /// </summary>
+        public string ErrorMsg { get; set; }
     }
 
     public class PODto

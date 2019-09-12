@@ -77,7 +77,7 @@ namespace MPS.Controllers
         [HttpPost]
         public object CreatePO([FromBody]RecModel<CreatePODto> param)
         {
-            RetModel<PODto> retModel = new RetModel<PODto>();
+            RetModel<object> retModel = new RetModel<object>();
             //try
             //{
                 Bussiness.PO PO = new Bussiness.PO();
