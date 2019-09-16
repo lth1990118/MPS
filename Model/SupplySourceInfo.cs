@@ -17,5 +17,9 @@ namespace MPS.Model
         public string NameSegment1 { get; set; }
         public decimal SupplierQuota { get; set; }
         public DateTime ModifiedOn { get; set; }
+
+        public bool Effective_IsEffective { get; set; }
+        public DateTime Effective_effectivedate { get; set; }
+        public DateTime Effective_disabledate { get; set; }
     }
 }
