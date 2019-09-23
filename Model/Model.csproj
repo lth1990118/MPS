@@ -61,6 +61,7 @@
     <Compile Include="Capacity.cs" />
     <Compile Include="ItemInfo.cs" />
     <Compile Include="ItemInfo-复制.cs" />
+    <Compile Include="MPSPOInfo.cs" />
     <Compile Include="POInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RtGoodsInfo.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="U9Service\CreatePOSRVStub.cs" />
     <Compile Include="U9Service\CreatePOSVStub.cs" />
     <Compile Include="U9Service\CustCreateRtGoodsDoc.cs" />
+    <Compile Include="WhQohInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

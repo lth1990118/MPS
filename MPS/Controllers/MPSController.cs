@@ -75,13 +75,28 @@ namespace MPS.Controllers
         }
 
         [HttpPost]
-        public object CreatePO([FromBody]RecModel<CreatePODto> param)
+        public RetModel<object> CreatePO([FromBody]RecModel<CreatePODto> param)
         {
             RetModel<object> retModel = new RetModel<object>();
             //try
             //{
                 Bussiness.PO PO = new Bussiness.PO();
-                retModel = PO.CreatePO(param);
+                retModel = PO.CreatePOV2(param);
+            //}
+            //catch (Exception e){
+            //    retModel.message = Common.GetExceptionMessage(e);
+            //    retModel.code = "-1";
+            //}
+            return retModel;
+        }
+        [HttpPost]
+        public object CreatePOV2([FromBody]RecModel<CreatePODto> param)
+        {
+            RetModel<object> retModel = new RetModel<object>();
+            //try
+            //{
+            Bussiness.PO PO = new Bussiness.PO();
+            retModel = PO.CreatePOV2(param);
             //}
             //catch (Exception e){
             //    retModel.message = Common.GetExceptionMessage(e);
@@ -160,7 +175,7 @@ namespace MPS.Controllers
         }
 
         /// <summary>
-        /// 创建回货计划
+        /// 销售订单删除日志
         /// </summary>
         /// <param name="param"></param>
         /// <returns></returns>
@@ -170,6 +185,33 @@ namespace MPS.Controllers
             RetModel<List<SODeleteLogInfo>> retModel = new RetModel<List<SODeleteLogInfo>>();
             Bussiness.SO SO = new Bussiness.SO();
             retModel = SO.GetSODeleteLog(param);           
+            return retModel;
+        }
+
+        /// <summary>
+        /// 采购订单中间表信息
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object MPSPOInfo([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<MPSPOInfo>> retModel = new RetModel<List<MPSPOInfo>>();
+            Bussiness.PO PO = new Bussiness.PO();
+            retModel = PO.GetMPSPOInfo(param);
+            return retModel;
+        }
+        /// <summary>
+        /// 库存
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object GetWhQoh()
+        {
+            RetModel<List<WhQohInfo>> retModel = new RetModel<List<WhQohInfo>>();
+            Bussiness.WhQoh WhQoh = new Bussiness.WhQoh();
+            retModel = WhQoh.GetWhQoh();
             return retModel;
         }
     }

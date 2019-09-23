@@ -124,6 +124,10 @@ namespace MPS.Model
         /// </summary>
         public decimal OrderUsageQty { get; set; }
         /// <summary>
+        /// 总在途数据
+        /// </summary>
+        public decimal TotalOnWay { get; set; }
+        /// <summary>
         /// 杭州在途数量
         /// </summary>
         public decimal HZOnWay { get; set; }

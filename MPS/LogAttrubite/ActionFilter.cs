@@ -1,6 +1,7 @@
 ﻿using MPS.Bussiness.Custom;
 using MPS.LogAttrubite;
 using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Web.Http.Controllers;
@@ -24,9 +25,12 @@ public class ActionFilter : ActionFilterAttribute
             string url = actionContext.Request.RequestUri.AbsoluteUri;
             string actionName = actionContext.ActionDescriptor.ActionName;
             string argument = Newtonsoft.Json.JsonConvert.SerializeObject(actionContext.ActionArguments);
-
-            log = LogFactory.GetLogger("loginfo");
-            log.Info("[" + RondomNum + "]  " + url + "\r\n 参数：" + argument);
+            bool isDebug = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDebug"]);
+            if (isDebug)
+            {
+                log = LogFactory.GetLogger("loginfo");
+                log.Info("[" + RondomNum + "]  " + url + "\r\n 参数：" + argument);
+            }
             stopWatch.Start();
         }
         catch {

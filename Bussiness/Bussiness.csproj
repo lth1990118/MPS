@@ -58,6 +58,7 @@
     <Compile Include="SupplySource.cs" />
     <Compile Include="U9Service\CustCreatePOSV.cs" />
     <Compile Include="U9Service\CustCreateRtGoodsDoc.cs" />
+    <Compile Include="WhQoh.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Custom\Custom.csproj">
