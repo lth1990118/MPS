@@ -31,7 +31,7 @@ namespace MPS.LogAttrubite
             //oResponse.Headers.Add("errMsg", retModel.message);
             actionExecutedContext.Response = oResponse;
             bool isDebug = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDebug"]);
-            if (isDebug)
+            if (!isDebug)
             {
                 try
                 {

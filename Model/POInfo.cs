@@ -40,6 +40,8 @@ namespace MPS.Model
         public DateTime? DeliveryDate { get; set; }
         public string Status { get; set; }
 
+        public decimal FinallyPriceAC { get; set; }
+
     }
 
     public class JCPOInfo

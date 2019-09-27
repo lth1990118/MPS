@@ -26,7 +26,7 @@ public class ActionFilter : ActionFilterAttribute
             string actionName = actionContext.ActionDescriptor.ActionName;
             string argument = Newtonsoft.Json.JsonConvert.SerializeObject(actionContext.ActionArguments);
             bool isDebug = Convert.ToBoolean(ConfigurationManager.AppSettings["IsDebug"]);
-            if (isDebug)
+            if (!isDebug|| actionName.ToUpper().Contains("CREATE"))
             {
                 log = LogFactory.GetLogger("loginfo");
                 log.Info("[" + RondomNum + "]  " + url + "\r\n 参数：" + argument);
@@ -50,14 +50,18 @@ public class ActionFilter : ActionFilterAttribute
                 object obj = new object();
                 var a = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>();
                 if (!a.IsFaulted)
-                {
-                    // 取得由 API 返回的资料
-                    obj = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>().Result;
+                {                    
+                    //结果转为自定义消息格式
+                    if (actionExecutedContext.ActionContext.ActionDescriptor.ActionName.ToUpper().Contains("CREATE"))
+                    {
+                        // 取得由 API 返回的资料
+                        obj = actionExecutedContext.ActionContext.Response.Content.ReadAsAsync<object>().Result;
+                        string json = JsonHelper.Serialize(obj);
+                        log = LogFactory.GetLogger("loginfo");
+                        log.Info("[" + RondomNum + "]  耗时：" + stopWatch.Elapsed.ToString() + "\r\n 返回：" + json);
+                    }
                 }
-                //结果转为自定义消息格式
-                //string json = string.Empty;//JsonHelper.Serialize(obj);
-                //log = LogFactory.GetLogger("loginfo");
-                //log.Info("[" + RondomNum + "]  耗时：" + stopWatch.Elapsed.ToString() + "\r\n 返回：" + json);
+               
             }
         }
         catch {

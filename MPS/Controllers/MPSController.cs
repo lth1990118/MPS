@@ -132,7 +132,7 @@ namespace MPS.Controllers
             //try
             //{
                 Bussiness.PO PO = new Bussiness.PO();
-                retModel = PO.GetJCPOInfo(param);
+                retModel = PO.GetJCPOInfoV2(param);
             //}
             //catch (Exception e)
             //{
