@@ -171,7 +171,7 @@ namespace MPS.Bussiness
                 }
             }
             result.data = dataHead;
-            return result;
+            return result; 
         }
 
         private string sql = "select ROW_NUMBER() over(order by solog.Createdon)as rownum,solog.SOID,solog.CreatedOn as DeletedOn,solog.CreatedBy as DeletedBy,solog.OrgCode,solog.DocNo  from kuka_sodeletelog solog where 1=1";
