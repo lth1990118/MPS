@@ -64,6 +64,7 @@
     <Compile Include="MPSPOInfo.cs" />
     <Compile Include="POInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RcvInfo.cs" />
     <Compile Include="RtGoodsInfo.cs" />
     <Compile Include="SOLineInfo.cs" />
     <Compile Include="SupplierInfo - 复制.cs" />

@@ -214,5 +214,19 @@ namespace MPS.Controllers
             retModel = WhQoh.GetWhQoh();
             return retModel;
         }
+
+        /// <summary>
+        /// 收货单数据
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object GetRcvInfo([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<RcvInfo>> retModel = new RetModel<List<RcvInfo>>();
+            Bussiness.Rcv Rcv = new Bussiness.Rcv();
+            retModel = Rcv.GetRcvInfo(param);
+            return retModel;
+        }
     }
 }
