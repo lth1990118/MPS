@@ -34,6 +34,10 @@ namespace MPS.Model
         /// </summary>
         public string CarCode { get; set; }
         /// <summary>
+        /// AbnormalBillType=1或者空是正常单，AbnormalBillType=2是异常单
+        /// </summary>
+        public int AbnormalBillType { get; set; }
+        /// <summary>
         /// 供应商编码
         /// </summary>
         public List<RtGoodsLineInfo> RtGoodsLines { get; set; }
@@ -74,6 +78,10 @@ namespace MPS.Model
         /// 总重量
         /// </summary>
         public decimal TotalWeight { get; set; }
+        /// <summary>
+        /// 备注
+        /// </summary>
+        public string Remark { get; set; }
 
     }
 }

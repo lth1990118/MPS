@@ -1,6 +1,5 @@
 ﻿namespace www.ufida.org.EntityData
 {
-    using System.Runtime.Serialization;
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.RtGoodsLineDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -16,6 +15,8 @@
         private long m_pOLineIDField;
 
         private long m_pOShipLineIDField;
+
+        private string m_remarkField;
 
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVRtGoodsDTOData m_rtGoodsDTOField;
 
@@ -89,6 +90,19 @@
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_remark
+        {
+            get
+            {
+                return this.m_remarkField;
+            }
+            set
+            {
+                this.m_remarkField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVRtGoodsDTOData m_rtGoodsDTO
         {
             get
@@ -128,6 +142,7 @@
         }
     }
 
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.RtGoodsDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -141,6 +156,8 @@
         private System.DateTime m_confirmDateField;
 
         private string m_deliveryAddressField;
+
+        private bool m_isTMSField;
 
         private string m_logisticsDocNoField;
 
@@ -203,6 +220,19 @@
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool m_isTMS
+        {
+            get
+            {
+                return this.m_isTMSField;
+            }
+            set
+            {
+                this.m_isTMSField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string m_logisticsDocNo
         {
             get
@@ -254,4 +284,5 @@
             }
         }
     }
+
 }

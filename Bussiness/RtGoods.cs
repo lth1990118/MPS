@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Custom;
 using MPS.Bussiness.U9Service;
+using MPS.Custom;
 using MPS.Model;
 using UFIDA.U9.Cust.Kuka.MPS.MPSSV.RtGoods;
 using UFSoft.UBF.Util.Context;
@@ -46,6 +50,7 @@ namespace MPS.Bussiness
             RtGoodsDTOData.m_deliveryAddress = AddressCode;
             RtGoodsDTOData.m_supplierCode = rtGoodsInfo.SupplierCode;
 
+            RtGoodsDTOData.m_isTMS = rtGoodsInfo.AbnormalBillType != 2 ? true : false;
             RtGoodsDTOData.m_carpoolNo = rtGoodsInfo.CarpoolNo;
             RtGoodsDTOData.m_carCode = rtGoodsInfo.CarCode;
             RtGoodsDTOData.m_logisticsDocNo = rtGoodsInfo.LogisticsDocNo;
@@ -62,6 +67,7 @@ namespace MPS.Bussiness
                 RtGoodsLine.m_rtGoodsDTO = RtGoodsDTOData;
                 RtGoodsLine.m_totalVolume = item.TotalVolume;
                 RtGoodsLine.m_totalWeight = item.TotalWeight;
+                RtGoodsLine.m_remark = item.Remark;
                 list.Add(RtGoodsLine);
             }
             RtGoodsDTOData.m_rtGoodsLines = list.ToArray();
@@ -69,6 +75,50 @@ namespace MPS.Bussiness
             ThreadContext context = Common.CreateContextObj();
             Result.data = Client.Do(context, RtGoodsDTOData, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages);
             return Result;
+        }
+
+        public RetModel<List<MPSRtGoodsDocInfo>> GetRtGoodsDocInfo(RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<MPSRtGoodsDocInfo>> result = new RetModel<List<MPSRtGoodsDocInfo>>();
+            result.code = "0";
+            result.message = "0";
+
+            DataSet ds = DbHelperSQL.ExecuteDataSet("kuka_basedata.dbo.Kuka_MPS_GetRtGoodsDoc", new SqlParameter[] {
+                new SqlParameter("startTime",param.data.startTime==null?"":param.data.startTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
+                new SqlParameter("endTime",param.data.endTime==null?"":param.data.endTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
+                new SqlParameter("pageIndex",param.data.pageIndex),
+                new SqlParameter("pageSize",param.data.pageSize),
+                new SqlParameter("keyValue",param.data.keyValue==null?"":param.data.keyValue)
+            });
+            //var dataSet2 = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
+            result.message = ds.Tables[0].Rows[0][0].ToString();
+            var dataHead = ExtendMethod.ToDataList<MPSRtGoodsDocInfo>(ds.Tables[1]);
+            var dataLine = ExtendMethod.ToDataList<MPSRtGoodsDocLineInfo>(ds.Tables[2]);
+            Dictionary<long, List<MPSRtGoodsDocLineInfo>> map = new Dictionary<long, List<MPSRtGoodsDocLineInfo>>();
+            foreach (MPSRtGoodsDocLineInfo line in dataLine)
+            {
+                if (map.ContainsKey(line.RtGoodsDoc))
+                {
+                    map[line.RtGoodsDoc].Add(line);
+                }
+                else
+                {
+                    map.Add(line.RtGoodsDoc, new List<MPSRtGoodsDocLineInfo>() { line });
+                }
+            }
+            foreach (MPSRtGoodsDocInfo head in dataHead)
+            {
+                if (map.ContainsKey(head.ID))
+                {
+                    head.RtGoodsDocLines = map[head.ID];
+                }
+                else
+                {
+                    head.RtGoodsDocLines = new List<MPSRtGoodsDocLineInfo>();
+                }
+            }
+            result.data = dataHead;
+            return result;
         }
     }
 }

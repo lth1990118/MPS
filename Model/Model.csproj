@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="AddressInfo.cs" />
     <Compile Include="API\CreatePODto.cs" />
+    <Compile Include="U9Service\CreatePOModify.cs" />
     <Compile Include="API\ItemInfoQuery.cs" />
     <Compile Include="API\Query.cs" />
     <Compile Include="API\RecModel.cs" />
@@ -63,8 +64,10 @@
     <Compile Include="ItemInfo-复制.cs" />
     <Compile Include="MPSPOInfo.cs" />
     <Compile Include="POInfo.cs" />
+    <Compile Include="POModifyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RcvInfo.cs" />
+    <Compile Include="RtGoodsDocInfo.cs" />
     <Compile Include="RtGoodsInfo.cs" />
     <Compile Include="SOLineInfo.cs" />
     <Compile Include="SupplierInfo - 复制.cs" />

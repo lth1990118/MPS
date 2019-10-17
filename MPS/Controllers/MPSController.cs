@@ -1,4 +1,5 @@
-﻿using MPS.Bussiness.U9Service;
+﻿using MPS.Bussiness;
+using MPS.Bussiness.U9Service;
 using MPS.Custom;
 using MPS.Model;
 using MPS.Model.API;
@@ -226,6 +227,20 @@ namespace MPS.Controllers
             RetModel<List<RcvInfo>> retModel = new RetModel<List<RcvInfo>>();
             Bussiness.Rcv Rcv = new Bussiness.Rcv();
             retModel = Rcv.GetRcvInfo(param);
+            return retModel;
+        }
+
+        /// <summary>
+        /// 采购订单变更单
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object CreatePOModify([FromBody]RecModel<POModifyDTOInfo> param)
+        {
+            RetModel<object> retModel = new RetModel<object>();
+            POModify pOModify = new POModify();
+            retModel=pOModify.CreatePOModify(param);
             return retModel;
         }
     }

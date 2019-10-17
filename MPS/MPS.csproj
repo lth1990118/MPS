@@ -153,6 +153,10 @@
       <Project>{189db259-d7ce-443f-acdf-7120e9609585}</Project>
       <Name>Model</Name>
     </ProjectReference>
+    <ProjectReference Include="..\POModify\POModify.csproj">
+      <Project>{07e92142-b91f-4c65-971b-8a138f840000}</Project>
+      <Name>POModify</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

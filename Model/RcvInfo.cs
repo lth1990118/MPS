@@ -22,6 +22,7 @@ namespace MPS.Model
     public class RcvLineInfo
     {
         public long ID { get; set; }
+        public int DocLineNo { get; set; }
         public string ItemInfo_ItemCode { get; set; }
         public decimal RcvQtyPU { get; set; }
         public decimal ArriveQtyPU { get; set; }

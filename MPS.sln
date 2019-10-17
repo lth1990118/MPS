@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Custom", "Custom\Custom.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{03305411-8AA5-44DB-90C0-0ADC5D439960}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POModify", "POModify\POModify.csproj", "{07E92142-B91F-4C65-971B-8A138F840000}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{03305411-8AA5-44DB-90C0-0ADC5D439960}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03305411-8AA5-44DB-90C0-0ADC5D439960}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{03305411-8AA5-44DB-90C0-0ADC5D439960}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07E92142-B91F-4C65-971B-8A138F840000}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07E92142-B91F-4C65-971B-8A138F840000}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07E92142-B91F-4C65-971B-8A138F840000}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07E92142-B91F-4C65-971B-8A138F840000}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
