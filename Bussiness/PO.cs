@@ -144,11 +144,10 @@ namespace MPS.Bussiness
                     m_itemCode = item.ItemCode,
                     m_remark = item.Remark,
                     m_srcDocNo = item.SrcDocNo,                    
-                    m_createPODTO = poDtoData
-                    //,
-                    //m_srcDoc=item.SrcDoc,
-                    //m_srcDocLine=item.SrcDocLine,
-                    //m_srcDocLineNo=item.SrcDocLineNo
+                    m_createPODTO = poDtoData,
+                    m_srcDoc=item.SrcDoc,
+                    m_srcDocLine=item.SrcDocLine,
+                    m_srcDocLineNo=item.SrcDocLineNo
                 };
                 poLines.Add(poLine);
             }
@@ -216,7 +215,7 @@ namespace MPS.Bussiness
                 }
                 if (!string.IsNullOrEmpty(param.data.keyValue))
                 {
-                    sqlParam += " and po.PODocNo<@PODocNo";
+                    sqlParam += " and po.PODocNo=@PODocNo";
                     listParam.Add(new SqlParameter("PODocNo", param.data.keyValue));
                 }
             }

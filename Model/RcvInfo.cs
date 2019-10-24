@@ -32,5 +32,6 @@ namespace MPS.Model
         public long SrcDoc_SrcDocLine_EntityID { get; set; }
         public int SrcDoc_SrcDocLineNo { get; set; }
         public long Receivement { get; set; }
+        public DateTime RcvDate { get; set; }
     }
 }

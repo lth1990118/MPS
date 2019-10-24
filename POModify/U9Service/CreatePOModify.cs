@@ -43,6 +43,9 @@ public interface UFIDAU9CustKukaMPSMPSSVICreatePOModifySv
     [System.ServiceModel.ServiceKnownTypeAttribute(typeof(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData[]))]
     [System.ServiceModel.ServiceKnownTypeAttribute(typeof(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData))]
     [System.ServiceModel.ServiceKnownTypeAttribute(typeof(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData))]
+    [System.ServiceModel.ServiceKnownTypeAttribute(typeof(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyResultData))]
+    [System.ServiceModel.ServiceKnownTypeAttribute(typeof(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPurchaseOrderDTOData[]))]
+    [System.ServiceModel.ServiceKnownTypeAttribute(typeof(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPurchaseOrderDTOData))]
     [System.ServiceModel.ServiceKnownTypeAttribute(typeof(System.Data.DataRowState))]
     [System.ServiceModel.ServiceKnownTypeAttribute(typeof(UFSoft.UBF.Service.ServiceLostException))]
     [System.ServiceModel.ServiceKnownTypeAttribute(typeof(UFSoft.UBF.Service.ServiceException))]
@@ -86,7 +89,7 @@ public partial class DoResponse
 {
 
     [System.ServiceModel.MessageBodyMemberAttribute(Namespace = "http://www.UFIDA.org", Order = 0)]
-    public string DoResult;
+    public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyResultData DoResult;
 
     [System.ServiceModel.MessageBodyMemberAttribute(Namespace = "http://www.UFIDA.org", Order = 1)]
     public UFSoft.UBF.Exceptions1.MessageBase[] outMessages;
@@ -95,7 +98,7 @@ public partial class DoResponse
     {
     }
 
-    public DoResponse(string DoResult, UFSoft.UBF.Exceptions1.MessageBase[] outMessages)
+    public DoResponse(www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyResultData DoResult, UFSoft.UBF.Exceptions1.MessageBase[] outMessages)
     {
         this.DoResult = DoResult;
         this.outMessages = outMessages;
@@ -142,7 +145,7 @@ public partial class UFIDAU9CustKukaMPSMPSSVICreatePOModifySvClient : System.Ser
         return base.Channel.Do(request);
     }
 
-    public string Do(object context, www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyDTOData createPOModifyDTO, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages)
+    public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyResultData Do(object context, www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyDTOData createPOModifyDTO, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages)
     {
         DoRequest inValue = new DoRequest();
         inValue.context = context;

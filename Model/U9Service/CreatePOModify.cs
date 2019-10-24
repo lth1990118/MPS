@@ -2,27 +2,41 @@
 {
     using System.Runtime.Serialization;
 
-
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.POModifyDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
     public partial class UFIDAU9CustKukaMPSMPSSVPOModifyDTOData : www.ufida.org.EntityData.UFSoftUBFBusinessDataTransObjectBase
     {
 
-        private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData[] m_pOShipLinesField;
+        private string m_jsonStrField;
+
+        private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData[] m_pOLinesField;
 
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData m_purchaseOrderField;
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData[] m_pOShipLines
+        public string m_jsonStr
         {
             get
             {
-                return this.m_pOShipLinesField;
+                return this.m_jsonStrField;
             }
             set
             {
-                this.m_pOShipLinesField = value;
+                this.m_jsonStrField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData[] m_pOLines
+        {
+            get
+            {
+                return this.m_pOLinesField;
+            }
+            set
+            {
+                this.m_pOLinesField = value;
             }
         }
 
@@ -46,20 +60,20 @@
     public partial class UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData : www.ufida.org.EntityData.UFSoftUBFBusinessDataTransObjectBase
     {
 
-        private int m_changeTypeField;
+        private short m_changeTypeField;
 
         private System.DateTime m_deliveryDateField;
 
-        private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData m_itemInfoField;
+        private long m_pOLineField;
 
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyDTOData m_pOModifyDTOField;
 
-        private long m_pOShipLineIDField;
-
         private decimal m_qtyField;
 
+        private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData m_supplierField;
+
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int m_changeType
+        public short m_changeType
         {
             get
             {
@@ -85,15 +99,15 @@
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData m_itemInfo
+        public long m_pOLine
         {
             get
             {
-                return this.m_itemInfoField;
+                return this.m_pOLineField;
             }
             set
             {
-                this.m_itemInfoField = value;
+                this.m_pOLineField = value;
             }
         }
 
@@ -111,19 +125,6 @@
         }
 
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public long m_pOShipLineID
-        {
-            get
-            {
-                return this.m_pOShipLineIDField;
-            }
-            set
-            {
-                this.m_pOShipLineIDField = value;
-            }
-        }
-
-        [System.Runtime.Serialization.DataMemberAttribute()]
         public decimal m_qty
         {
             get
@@ -133,6 +134,19 @@
             set
             {
                 this.m_qtyField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData m_supplier
+        {
+            get
+            {
+                return this.m_supplierField;
+            }
+            set
+            {
+                this.m_supplierField = value;
             }
         }
     }
@@ -185,6 +199,140 @@
             set
             {
                 this.m_nameField = value;
+            }
+        }
+    }
+
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.POModifyResultData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
+    public partial class UFIDAU9CustKukaMPSMPSSVPOModifyResultData : www.ufida.org.EntityData.UFSoftUBFBusinessDataTransObjectBase
+    {
+
+        private long m_pOModifyField;
+
+        private string m_pOModifyDocNoField;
+
+        private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPurchaseOrderDTOData[] m_purchaseOrdersField;
+
+        private string m_statusField;
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long m_pOModify
+        {
+            get
+            {
+                return this.m_pOModifyField;
+            }
+            set
+            {
+                this.m_pOModifyField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_pOModifyDocNo
+        {
+            get
+            {
+                return this.m_pOModifyDocNoField;
+            }
+            set
+            {
+                this.m_pOModifyDocNoField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPurchaseOrderDTOData[] m_purchaseOrders
+        {
+            get
+            {
+                return this.m_purchaseOrdersField;
+            }
+            set
+            {
+                this.m_purchaseOrdersField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_status
+        {
+            get
+            {
+                return this.m_statusField;
+            }
+            set
+            {
+                this.m_statusField = value;
+            }
+        }
+    }
+
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.PurchaseOrderDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
+    public partial class UFIDAU9CustKukaMPSMPSSVPurchaseOrderDTOData : www.ufida.org.EntityData.UFSoftUBFBusinessDataTransObjectBase
+    {
+
+        private string m_docNoField;
+
+        private long m_iDField;
+
+        private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyResultData m_pOModifyResultField;
+
+        private string m_statusField;
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_docNo
+        {
+            get
+            {
+                return this.m_docNoField;
+            }
+            set
+            {
+                this.m_docNoField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public long m_iD
+        {
+            get
+            {
+                return this.m_iDField;
+            }
+            set
+            {
+                this.m_iDField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOModifyResultData m_pOModifyResult
+        {
+            get
+            {
+                return this.m_pOModifyResultField;
+            }
+            set
+            {
+                this.m_pOModifyResultField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_status
+        {
+            get
+            {
+                return this.m_statusField;
+            }
+            set
+            {
+                this.m_statusField = value;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -10,6 +11,17 @@ namespace Custom
 {
     public static class FormatTool
     {
+        public static String JsonObjToString(this object obj)
+        {
+            if (obj == null)
+            {
+                return String.Empty;
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(obj);
+            }
+        }
         public static String ObjToString(this object obj)
         {
             if (obj == null)

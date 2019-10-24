@@ -177,5 +177,13 @@ namespace MPS.Model
         /// 供方安全库存
         /// </summary>
         public string SuppSafeQty { get; set; }
+        /// <summary>
+        /// 是否河北料品
+        /// </summary>
+        public byte IsHBItem { get; set; }
+        /// <summary>
+        /// 是否黄冈料品
+        /// </summary>
+        public byte IsHGItem { get; set; }
     }
 }

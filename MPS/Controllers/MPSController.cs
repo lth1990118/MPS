@@ -231,6 +231,20 @@ namespace MPS.Controllers
         }
 
         /// <summary>
+        /// MPS获取回货计划
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object GetRtGoodsDocInfo([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<MPSRtGoodsDocInfo>> retModel = new RetModel<List<MPSRtGoodsDocInfo>>();
+            Bussiness.RtGoods rtgoods = new Bussiness.RtGoods();
+            retModel = rtgoods.GetRtGoodsDocInfo(param);
+            return retModel;
+        }
+
+        /// <summary>
         /// 采购订单变更单
         /// </summary>
         /// <param name="param"></param>
@@ -241,6 +255,19 @@ namespace MPS.Controllers
             RetModel<object> retModel = new RetModel<object>();
             POModify pOModify = new POModify();
             retModel=pOModify.CreatePOModify(param);
+            return retModel;
+        }
+        /// <summary>
+        /// 采购订单变更单
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object GetPOModify([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<MPSPOModifyInfo>> retModel = new RetModel<List<MPSPOModifyInfo>>();
+            POModify pOModify = new POModify();
+            retModel = pOModify.GetPOModify(param);
             return retModel;
         }
     }
