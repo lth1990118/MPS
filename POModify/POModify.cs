@@ -22,7 +22,7 @@ namespace MPS.Bussiness
             ValidateParam(param);
             List<SqlParameter> listParam = new List<SqlParameter>();
             StringBuilder sqlQuery = new StringBuilder();
-            sqlQuery.Append("select  po.Supplier_Code as SupplierCode,po.Supplier_Supplier as Supplier,pl.ItemInfo_ItemID as ItemID,pl.ItemInfo_ItemCode as ItemCode,pl.id as POLine,po.ID as PurchaseOrder,po.docno,po.DescFlexField_PubDescSeg42,pl.DocLineNo,pl.PurQtyPU,pl.TotalRecievedQtyPU, pl.TotalRtnDeductQtyPU,#tempdata.qtyc as OnlineQty from dbo.PM_PurchaseOrder po left join dbo.PM_POLine pl on po.id=pl.PurchaseOrder left join ( select lineid as SrcDocLineID,sum(qty) as QtyC from( select rdl.SrcDocLineID as lineid, sum( ConfirmQty1) as qty from dbo.Kuka_VPT_RtGoodsDocLine rdl  where rdl.LineStatus <= 2 group by SrcDocLineID   union all  select asnl.SrcDocInfo_SrcDocLine_EntityID as lineid,Sum(asnl.ShipQtyTU) as qty from dbo.PM_ASN asn  left join  dbo.PM_ASNLine asnl on asn.id=asnl.ASN  where asnl.Status<=2   group by asnl.SrcDocInfo_SrcDocLine_EntityID   union all  select rl.SrcDoc_SrcDocLine_EntityID as lineid,Sum(rl.RcvQtyPU) as qty from dbo.PM_Receivement rcv  left join  dbo.PM_RcvLine rl on rcv.id=rl.Receivement and rl.KitParentLine=0  where rl.Status<=3  group by rl.SrcDoc_SrcDocLine_EntityID  )t group by lineid )#tempdata on #tempdata.SrcDocLineID=pl.id where po.id=@POID");
+            sqlQuery.Append("select  pl.status as POLineStatus,po.Supplier_Code as SupplierCode,po.Supplier_Supplier as Supplier,pl.ItemInfo_ItemID as ItemID,pl.ItemInfo_ItemCode as ItemCode,pl.id as POLine,po.ID as PurchaseOrder,po.docno,po.DescFlexField_PubDescSeg42,pl.DocLineNo,pl.PurQtyPU,pl.TotalRecievedQtyPU, pl.TotalRtnDeductQtyPU,#tempdata.qtyc as OnlineQty from dbo.PM_PurchaseOrder po left join dbo.PM_POLine pl on po.id=pl.PurchaseOrder left join ( select lineid as SrcDocLineID,sum(qty) as QtyC from( select rdl.SrcDocLineID as lineid, sum( ConfirmQty1) as qty from dbo.Kuka_VPT_RtGoodsDocLine rdl  where rdl.LineStatus <= 2 group by SrcDocLineID   union all  select asnl.SrcDocInfo_SrcDocLine_EntityID as lineid,Sum(asnl.ShipQtyTU) as qty from dbo.PM_ASN asn  left join  dbo.PM_ASNLine asnl on asn.id=asnl.ASN  where asnl.Status<=2   group by asnl.SrcDocInfo_SrcDocLine_EntityID   union all  select rl.SrcDoc_SrcDocLine_EntityID as lineid,Sum(rl.RcvQtyPU) as qty from dbo.PM_Receivement rcv  left join  dbo.PM_RcvLine rl on rcv.id=rl.Receivement and rl.KitParentLine=0  where rl.Status<=3  group by rl.SrcDoc_SrcDocLine_EntityID  )t group by lineid )#tempdata on #tempdata.SrcDocLineID=pl.id where po.id=@POID");
             listParam.Add(new SqlParameter("POID", param.data.PurchaseOrder));
             var dataTable = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam).Tables[0];
             List<POLineValidateInfo> listPOLine = ExtendMethod.ToDataList<POLineValidateInfo>(dataTable);
@@ -43,6 +43,10 @@ namespace MPS.Bussiness
                 var item = listPOLine.Where(p => p.POLine == poModifyLine.POLine).FirstOrDefault();
                 if (item == null) {
                     throw new Exception(string.Format("采购订单行ID不存在{0}", poModifyLine.POLine));
+                }
+                if (item.POLineStatus != 2)
+                {
+                    throw new Exception(string.Format("采购订单{0}行号{1}状态不是审核状态", item.DocNo, item.DocLineNo));
                 }
                 //可变数量验证
                 if (poModifyLine.PurQtyPU > item.PurQtyPU - item.TotalRecievedQtyPU - item.TotalRtnDeductQtyPU - item.OnlineQty)
@@ -138,7 +142,7 @@ namespace MPS.Bussiness
                 }
                 if (string.IsNullOrEmpty(item.ActionType.ToString()))
                 {
-                    throw new Exception("变更类型");
+                    throw new Exception("变更类型不能为空");
                 }
                 switch (item.ActionType.Value) {
                     case ActionType.Cancel:

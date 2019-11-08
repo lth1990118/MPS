@@ -70,5 +70,6 @@ namespace MPS.Model.API
         /// 供应商
         /// </summary>
         public string Supplier_Code { get; set; }
+        public string ErrorMsg { get; set; }
     }
 }

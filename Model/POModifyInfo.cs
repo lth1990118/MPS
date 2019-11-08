@@ -76,6 +76,8 @@ namespace MPS.Model
         public decimal TotalRecievedQtyPU { get; set; }
         public decimal TotalRtnDeductQtyPU { get; set; }
         public decimal OnlineQty { get; set; }
+
+        public int POLineStatus { get; set; }
     }
 
     public class POModifyResult

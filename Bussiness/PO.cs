@@ -166,18 +166,26 @@ namespace MPS.Bussiness
             else {
                 context.nameValueHas["OrgID"] = Convert.ToInt64(dataTableSupplier.Rows[0]["id"]);
             }
+            www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPODataData result2;
+            PODto POInfo = new PODto();
+            try
+            {
+                result2 = Client.Do(context, poDtoData, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages);
+            }
+            catch
+            {
+                result2 = new UFIDAU9CustKukaMPSMPSSVPODataData();
+            }
 
-            www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPODataData result2 = Client.Do(context, poDtoData, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages);
+            POInfo.DeliveryDate = result2.m_deliverDate==DateTime.MinValue? DateTime.Now : result2.m_deliverDate;
+            POInfo.PODocNo = result2.m_docNo;
+            POInfo.Supplier_Code = result2.m_supplier;
+           
             //Client.Do(new DoResponse());
             #endregion            
             Result.data = new
             {
-                POInfo = new PODto()
-                {
-                    DeliveryDate = result2.m_deliverDate,
-                    PODocNo = result2.m_docNo,
-                    Supplier_Code = result2.m_supplier
-                },
+                POInfo = POInfo,
                 ErrorLine = listUnValidate
             };
             return Result;
@@ -280,7 +288,7 @@ namespace MPS.Bussiness
             result.message = "0";
             #region sql
             string sqlHead = " select po.ID, po.DocNo,(case po.status when 0 then '开立' when 1 then '审核中' when 2 then '已审核' when 3 then '自然关闭' when 4  then '短缺关闭' when 5 then '超额关闭' else '' end) as Status, po.Supplier_Supplier as Supplier, po.Supplier_Code as SupplierCode, st.Name as SupplierName, po.BusinessDate, po.CreatedBy, po.ModifiedOn  from dbo.PM_PurchaseOrder po  left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier  left join dbo.Base_Organization o on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.Poline=pl.id and pl.ItemInfo_ItemID=psl.ItemInfo_ItemID where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and  psl.DeliveryDate>'2017-01-01' {0} 	 group by po.ID, po.DocNo, po.Supplier_Supplier, po.Supplier_Code, st.Name, po.BusinessDate, po.CreatedBy, po.ModifiedOn,po.status ";
-            string sqlLine = "  select po.ID as PurchaseOrder, (case pl.status when 0 then '开立' when 1 then '审核中' when 2 then '已审核' when 3 then '自然关闭' when 4  then '短缺关闭' when 5 then '超额关闭' else '' end) as Status,	 pl.DocLineNo ,pl.itemInfo_itemCode as ItemCode ,pl.itemInfo_itemName as ItemName ,(case when  itemed.DescFlexField_PrivateDescSeg25='亲子包'  	then '特殊产品' else tempCategory.SaleName  end)as Dept,pl.FinallyPriceAC ,pl.PurQtyPU as PurQtyPU ,pl.TotalRecievedQtyPU as TotalRecievedQtyPU ,pl.TotalRtnDeductQtyPU  as TotalRtnDeductQtyPU ,case when pl.status>2 then 0 else pl.PurQtyPU-psl.RcvQtyTU-psl.TotalRtnDeductQtyCU end as LastQty ,0 as OverDateQty ,null as ChangeDeliveryDate ,pl.PurQtyPU as OriginQty ,(case when psl.DeliveryDate is null  then pl.DescFlexSegments_PrivateDescSeg20 else  psl.DeliveryDate end) as OriginDeliveryDate ,(case when psl.DeliveryDate is null  then pl.DescFlexSegments_PrivateDescSeg20 else  psl.DeliveryDate end)  as DeliveryDate  from dbo.PM_PurchaseOrder po  left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier  left join dbo.Base_Organization o on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID     left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id        left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.PurchaseCategory  where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')   and  psl.DeliveryDate>'2017-01-01'  {0}  ";
+            string sqlLine = "  select po.ID as PurchaseOrder, (case pl.status when 0 then '开立' when 1 then '审核中' when 2 then '已审核' when 3 then '自然关闭' when 4  then '短缺关闭' when 5 then '超额关闭' else '' end) as Status,	 pl.DocLineNo ,pl.itemInfo_itemCode as ItemCode ,pl.itemInfo_itemName as ItemName ,(case when  itemed.DescFlexField_PrivateDescSeg25='亲子包'  	then '特殊产品' else tempCategory.SaleName  end)as Dept,pl.FinallyPriceAC ,pl.PurQtyPU as PurQtyPU ,pl.TotalRecievedQtyPU as TotalRecievedQtyPU ,pl.TotalRtnDeductQtyPU  as TotalRtnDeductQtyPU ,case when pl.status>2 then 0 else pl.PurQtyPU-psl.RcvQtyTU-psl.TotalRtnDeductQtyCU end as LastQty ,0 as OverDateQty ,null as ChangeDeliveryDate ,pl.PurQtyPU as OriginQty ,(case when psl.DeliveryDate is null  then pl.DescFlexSegments_PrivateDescSeg20 else  psl.DeliveryDate end) as OriginDeliveryDate ,(case when psl.DeliveryDate is null  then pl.DescFlexSegments_PrivateDescSeg20 else  psl.DeliveryDate end)  as DeliveryDate,pl.SrcDocInfo_SrcDoc_EntityID,pl.SrcDocInfo_SrcDocNo,pl.SrcDocInfo_SrcDocLine_EntityID,pl.SrcDocInfo_SrcDocLineNo  from dbo.PM_PurchaseOrder po  left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier  left join dbo.Base_Organization o on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID     left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id        left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.PurchaseCategory  where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')   and  psl.DeliveryDate>'2017-01-01'  {0}  ";
             string sqlCount = " select count(1) from(select po.id  from dbo.PM_PurchaseOrder po left join dbo.Base_Organization o on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.Poline=pl.id and pl.ItemInfo_ItemID=psl.ItemInfo_ItemID where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and  psl.DeliveryDate>'2017-01-01' {0} group by po.id) t  ";
             string sqlSOPage = " select  ROW_NUMBER() over(order by t.id)as rownum,* from ( 	 select po.ID  from dbo.PM_PurchaseOrder po  left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier  left join dbo.Base_Organization o on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.Poline=pl.id and pl.ItemInfo_ItemID=psl.ItemInfo_ItemID where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and  psl.DeliveryDate>'2017-01-01' {0} group by po.ID) t  ";
 

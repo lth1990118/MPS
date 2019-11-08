@@ -41,6 +41,22 @@ namespace MPS.Model
         public string Status { get; set; }
 
         public decimal FinallyPriceAC { get; set; }
+        /// <summary>
+        /// 来源单据id
+        /// </summary>
+        public long SrcDocInfo_SrcDoc_EntityID { get; set; }
+        /// <summary>
+        /// 来源单据单号
+        /// </summary>
+        public string SrcDocInfo_SrcDocNo { get; set; }
+        /// <summary>
+        /// 来源单据行id
+        /// </summary>
+        public long SrcDocInfo_SrcDocLine_EntityID { get; set; }
+        /// <summary>
+        /// 来源单据行号
+        /// </summary>
+        public int SrcDocInfo_SrcDocLineNo { get; set; }
 
     }
 
@@ -162,5 +178,11 @@ namespace MPS.Model
         /// </summary>
         public decimal ComInv { get; set; }
     }
-
+    public class RtGoodsResult
+    {
+        public string LogisticsDocNo { get; set; }
+        public string RtGoodsDocNo { get; set; }
+        public string SupplierCode { get; set; }
+        public string CarpoolNo { get; set; }
+    }
 }

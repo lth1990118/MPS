@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Script.Serialization;
+using www.ufida.org.EntityData;
 
 namespace MPS.Controllers
 {
@@ -148,30 +149,59 @@ namespace MPS.Controllers
         /// <param name="param"></param>
         /// <returns></returns>
         [HttpPost]
-        public object CreateRtGoods([FromBody]RecModel<RtGoodsInfo> param)
+        public object CreateRtGoods([FromBody]RecModel<List<RtGoodsInfo>> param)
         {
-            RetModel<string> retModel = new RetModel<string>();
-            //try
-            //{
-                if (string.IsNullOrEmpty(param.data.DeliveryAddress)) {
+            RetModel<List<RtGoodsResult>> retModel = new RetModel<List<RtGoodsResult>>();
+           
+            foreach (var item in param.data)
+            {
+                if (string.IsNullOrEmpty(item.DeliveryAddress))
+                {
                     throw new Exception("送货地址字段不能为空");
                 }
-                if (param.data.ConfirmDate==DateTime.MinValue)
+                if (item.ConfirmDate == DateTime.MinValue)
                 {
                     throw new Exception("计划发货日期字段不能为空");
                 }
-                if (string.IsNullOrEmpty(param.data.SupplierCode))
+                if (string.IsNullOrEmpty(item.SupplierCode))
                 {
                     throw new Exception("供应商编码字段不能为空");
                 }
-                Bussiness.RtGoods RtGoods = new Bussiness.RtGoods();
-                retModel = RtGoods.CreateRtGoods(param);
-            //}
-            //catch (Exception e)
-            //{
-            //    retModel.message = Common.GetExceptionMessage(e);
-            //    retModel.code = "-1";
-            //}
+            }
+
+            Bussiness.RtGoods RtGoods = new Bussiness.RtGoods();
+            retModel = RtGoods.CreateRtGoodsV2(param);
+         
+            return retModel;
+        }
+        /// <summary>
+        /// 创建回货计划
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object CreateRtGoodsV1([FromBody]RecModel<RtGoodsInfo> param)
+        {
+            RetModel<string> retModel = new RetModel<string>();
+
+
+            if (string.IsNullOrEmpty(param.data.DeliveryAddress))
+            {
+                throw new Exception("送货地址字段不能为空");
+            }
+            if (param.data.ConfirmDate == DateTime.MinValue)
+            {
+                throw new Exception("计划发货日期字段不能为空");
+            }
+            if (string.IsNullOrEmpty(param.data.SupplierCode))
+            {
+                throw new Exception("供应商编码字段不能为空");
+            }
+
+
+            Bussiness.RtGoods RtGoods = new Bussiness.RtGoods();
+            retModel = RtGoods.CreateRtGoods(param);
+
             return retModel;
         }
 
@@ -268,6 +298,19 @@ namespace MPS.Controllers
             RetModel<List<MPSPOModifyInfo>> retModel = new RetModel<List<MPSPOModifyInfo>>();
             POModify pOModify = new POModify();
             retModel = pOModify.GetPOModify(param);
+            return retModel;
+        }
+        /// <summary>
+        /// 采购订单变更查询
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public object GetPOInfoForModify([FromBody]RecModel<POInfoModifyQuery> param)
+        {
+            RetModel<List<POInfoModify>> retModel = new RetModel<List<POInfoModify>>();
+            POInfoForModify pOModify = new POInfoForModify();
+            retModel = pOModify.GetPOInfo(param);
             return retModel;
         }
     }

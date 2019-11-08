@@ -93,5 +93,21 @@ namespace MPS.Model
         /// 更新时间
         /// </summary>
         public DateTime ModifiedOn { get; set; }
+        /// <summary>
+        /// 来源单号
+        /// </summary>
+        public string SrcDocInfo_SrcDocNo { get; set; }
+        /// <summary>
+        /// 来源单ID
+        /// </summary>
+        public long SrcDocInfo_SrcDoc_EntityID { get; set; }
+        /// <summary>
+        ///  来源单行号       
+        /// </summary>
+        public int SrcDocInfo_SrcDocLineNo { get; set; }
+        /// <summary>
+        /// 来源单行id   
+        /// </summary>
+        public long SrcDocInfo_SrcDocLine_EntityID { get; set; }
     }
 }

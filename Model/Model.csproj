@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AddressInfo.cs" />
     <Compile Include="API\CreatePODto.cs" />
+    <Compile Include="POInfoModify.cs" />
     <Compile Include="U9Service\CreatePOModify.cs" />
     <Compile Include="API\ItemInfoQuery.cs" />
     <Compile Include="API\Query.cs" />

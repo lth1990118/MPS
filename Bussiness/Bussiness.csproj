@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Address.cs" />
     <Compile Include="ASN.cs" />
+    <Compile Include="POInfoForModify.cs" />
     <Compile Include="PO.cs" />
     <Compile Include="Rcv.cs" />
     <Compile Include="RtGoods.cs" />
