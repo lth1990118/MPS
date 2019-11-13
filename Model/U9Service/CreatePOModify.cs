@@ -2,6 +2,7 @@
 {
     using System.Runtime.Serialization;
 
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.POModifyDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -53,7 +54,7 @@
             }
         }
     }
-
+    
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.POShipLineDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]
@@ -63,6 +64,8 @@
         private short m_changeTypeField;
 
         private System.DateTime m_deliveryDateField;
+
+        private string m_memoField;
 
         private long m_pOLineField;
 
@@ -95,6 +98,19 @@
             set
             {
                 this.m_deliveryDateField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_memo
+        {
+            get
+            {
+                return this.m_memoField;
+            }
+            set
+            {
+                this.m_memoField = value;
             }
         }
 

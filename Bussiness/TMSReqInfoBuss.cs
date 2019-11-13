@@ -97,7 +97,7 @@ namespace MPS.Bussiness
                 }
             }
             
-             StringBuilder sqlQuery = new StringBuilder();
+            StringBuilder sqlQuery = new StringBuilder();
             sqlQuery.AppendLine(sqlSOPage.ToString());
             sqlQuery.AppendLine(sqlHeadS.ToString());
             sqlQuery.AppendLine(sqlLineS.ToString());

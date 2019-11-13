@@ -67,7 +67,8 @@ namespace MPS.Bussiness
                     {
                         m_iD = poModifyLine.Supplier
                     },
-                    m_pOModifyDTO = head
+                    m_pOModifyDTO = head,
+                    m_memo = poModifyLine.Memo
                 });
             }
             head.m_pOLines = listPOModifyLine.ToArray();

@@ -40,6 +40,7 @@ namespace MPS.Model
         public decimal PurQtyPU { get; set; }
         public long Supplier { get; set; }
         public DateTime DeliveryDate { get; set; }
+        public string Memo { get; set; }
     }
     /// <summary>
     /// Cancel-取消、Delay-延期、TransFac-转厂
