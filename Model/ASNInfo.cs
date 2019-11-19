@@ -76,19 +76,23 @@ namespace MPS.Model
         /// <summary>
         /// 单体积
         /// </summary>
-        public string Volume { get; set; }
+        private string volume;
+        public string Volume { get { return volume; } set { this.volume = value.Replace("m3", "").Replace("KG", ""); } }
         /// <summary>
         ///  单重量        
-        /// </summary>
-        public string Weight { get; set; }
+        /// </summary>       
+        private string weight;
+        public string Weight { get { return weight; } set { this.weight = value.Replace("m3", "").Replace("KG", ""); } }
         /// <summary>
         /// 河北总体积
         /// </summary>
-        public string TotalVolume { get; set; }
+        private string totalVolume;
+        public string TotalVolume { get { return totalVolume; } set { this.totalVolume = value.Replace("m3", "").Replace("KG", ""); } }
         /// <summary>
         /// 河北总重量
-        /// </summary>
-        public string TotalWeight { get; set; }
+        /// </summary>      
+        private string totalWeight;
+        public string TotalWeight { get { return totalWeight; } set { this.totalWeight = value.Replace("m3", "").Replace("KG", ""); } }
         /// <summary>
         /// 更新时间
         /// </summary>

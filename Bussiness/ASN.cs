@@ -50,6 +50,14 @@ namespace MPS.Bussiness
                     sqlExcute.Append(" and asn.ModifiedOn<@endTime");
                     listParam.Add(new SqlParameter("endTime", param.data.endTime));
                 }
+                if (!string.IsNullOrEmpty(param.data.keyValue))
+                {
+                    sqlLineS.Append(" and asn.docno=@docno");
+                    sqlHeadS.Append(" and asn.docno=@docno");
+                    sqlCount.Append(" and asn.docno=@docno");
+                    sqlExcute.Append(" and asn.docno=@docno");
+                    listParam.Add(new SqlParameter("docno", param.data.keyValue));
+                }
                 sqlSOPage.Append("select ID into #TempA from (");
                 sqlSOPage.Append(sqlExcute);
                 sqlSOPage.Append(") t");
