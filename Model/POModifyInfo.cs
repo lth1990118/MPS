@@ -19,6 +19,7 @@ namespace MPS.Model
         public string PODocNo { get; set; }
         public string MPSParam { get; set; }
         public string ErrorMsg { get; set; }
+        public string MessageID { get; set; }
 
     }
     public class POModifyInfo
@@ -30,6 +31,7 @@ namespace MPS.Model
     public class POModifyDTOInfo
     {
         public long PurchaseOrder { get; set; }
+        public int Version { get; set; }
         public List<POModifyLineDTOInfo> POModifyLines { get; set; }
     }
 
@@ -79,6 +81,7 @@ namespace MPS.Model
         public decimal OnlineQty { get; set; }
 
         public int POLineStatus { get; set; }
+        public int Version { get; set; }
     }
 
     public class POModifyResult

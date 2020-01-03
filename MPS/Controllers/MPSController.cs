@@ -134,13 +134,22 @@ namespace MPS.Controllers
             //try
             //{
                 Bussiness.PO PO = new Bussiness.PO();
-                retModel = PO.GetJCPOInfoV2(param);
+                retModel = PO.GetJCPOInfoV3(param);
             //}
             //catch (Exception e)
             //{
             //    retModel.message = Common.GetExceptionMessage(e);
             //    retModel.code = "-1";
             //}
+            return retModel;
+        }
+
+        [HttpPost]
+        public object JCPOInfo3([FromBody]RecModel<ItemInfoQuery> param)
+        {
+            RetModel<List<JCPOInfo>> retModel = new RetModel<List<JCPOInfo>>();
+            Bussiness.PO PO = new Bussiness.PO();
+            retModel = PO.GetJCPOInfoV3(param);          
             return retModel;
         }
         /// <summary>

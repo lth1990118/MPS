@@ -11,9 +11,13 @@
 
         private string m_jsonStrField;
 
+        private string m_messageIDField;
+
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPOShipLineDTOData[] m_pOLinesField;
 
         private www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVIDCodeNameData m_purchaseOrderField;
+
+        private int m_versionField;
 
         [System.Runtime.Serialization.DataMemberAttribute()]
         public string m_jsonStr
@@ -25,6 +29,19 @@
             set
             {
                 this.m_jsonStrField = value;
+            }
+        }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string m_messageID
+        {
+            get
+            {
+                return this.m_messageIDField;
+            }
+            set
+            {
+                this.m_messageIDField = value;
             }
         }
 
@@ -53,8 +70,22 @@
                 this.m_purchaseOrderField = value;
             }
         }
+
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int m_version
+        {
+            get
+            {
+                return this.m_versionField;
+            }
+            set
+            {
+                this.m_versionField = value;
+            }
+        }
     }
-    
+
+
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name = "UFIDA.U9.Cust.Kuka.MPS.MPSSV.POShipLineDTOData", Namespace = "http://www.UFIDA.org/EntityData", IsReference = true)]

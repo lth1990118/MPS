@@ -17,6 +17,7 @@ namespace MPS.Model
     public class POInfoModify
     {
         public string createdBy { get; set; }
+        public int version { get; set; }
         public string pocPurchaseOrderNo { get; set; }
         public long pocPurchaseOrderId { get; set; }
         public int pocPurchaseOrderLineNo { get; set; }

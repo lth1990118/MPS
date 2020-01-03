@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -166,20 +167,17 @@ namespace MPS.Bussiness
             else {
                 context.nameValueHas["OrgID"] = Convert.ToInt64(dataTableSupplier.Rows[0]["id"]);
             }
-            www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPODataData result2;
             PODto POInfo = new PODto();
-            try
+            POInfo.DeliveryDate = DateTime.Now;
+            if (poDtoData.m_pOLines.Length != 0)
             {
-                result2 = Client.Do(context, poDtoData, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages);
-            }
-            catch
-            {
-                result2 = new UFIDAU9CustKukaMPSMPSSVPODataData();
+                www.ufida.org.EntityData.UFIDAU9CustKukaMPSMPSSVPODataData result2 = Client.Do(context, poDtoData, out UFSoft.UBF.Exceptions1.MessageBase[] outMessages);
+                POInfo.DeliveryDate = result2.m_deliverDate == DateTime.MinValue ? DateTime.Now : result2.m_deliverDate;
+                POInfo.PODocNo = result2.m_docNo;
+                POInfo.Supplier_Code = result2.m_supplier;
             }
 
-            POInfo.DeliveryDate = result2.m_deliverDate==DateTime.MinValue? DateTime.Now : result2.m_deliverDate;
-            POInfo.PODocNo = result2.m_docNo;
-            POInfo.Supplier_Code = result2.m_supplier;
+           
            
             //Client.Do(new DoResponse());
             #endregion            
@@ -500,10 +498,10 @@ namespace MPS.Bussiness
             result.message = "0";
 
             #region sql
-            string sqlHead = " select po.ID ,po.DocNo ,po.Supplier_Supplier as Supplier ,po.Supplier_Code as SupplierCode ,st.Name as SupplierName   from dbo.PM_PurchaseOrder po  left join dbo.PM_PODocType pot on pot.id = po.DocumentType   left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o     on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id     left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID     inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory  where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%') and len(pl.ItemInfo_ItemCode)<=12 and  psl.DeliveryDate>'2017-01-01' and pl.status>=2 and po.Org in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316'  {0}  group by  po.ID ,po.DocNo ,po.Supplier_Supplier ,po.Supplier_Code ,st.Name ";
-            string sqlLine = "select po.ID as PurchaseOrder ,pl.id as ID, pl.DocLineNo ,pl.itemInfo_itemCode as ItemCode ,pl.itemInfo_itemName as ItemName  ,(case when  itemed.DescFlexField_PrivateDescSeg25='亲子包'  	then '特殊产品' else tempCategory.SaleName  end)as Dept  ,psl.DeliveryDate  as DeliveryDate   ,pl.PurQtyPU  ,(case pl.status when 0 then '开立' when 1 then '审核中' when 2 then '已审核' when 3 then '自然关闭' when 4  then '短缺关闭' when 5 then '超额关闭' else '' end) as Status,#tempInv.HZCurrentMonthInv as HZCurrentMonthInv ,#tempInv.HBCurrentMonthInv as HBCurrentMonthInv ,#tempInv.TotalInv as TotalInv ,pl.PurQtyPU as OrderQty ,case when pl.status>2 then 0 else pl.PurQtyPU-pl.TotalRecievedQtyPU-pl.TotalRtnDeductQtyPU-IsNull(#tempOpenRcv.RcvQtyPU,0) end as LastQty ,-1 as UsageQty ,0as OrderUsageQty ,#tempASN.HZOnWay as HZOnWay ,#tempASN.HBOnWay as HBOnWay ,#tempNoExpress.HBNoExpress as HBNoExpress ,#tempNoExpress.HZNoExpress as HZNoExpress ,#tempInv.HZTotalInv as HZTotalInv ,#tempInv.HBTotalInv as HBTotalInv ,#tempSONoExpress.销售未发 as SONoExpress ,0as ComInv   from dbo.PM_PurchaseOrder po    left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o     on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id     left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID     inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID    	left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id         	left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory   	left join #tempInv on #tempInv.id=psl.id 	left join #tempASN on #tempASN.id=psl.id 	left join #tempNoExpress on #tempNoExpress.采购订单号=po.docno and #tempNoExpress.采购订单行号=pl.doclineno left join #tempOpenRcv on #tempOpenRcv.pslid=psl.id left join #tempSONoExpress on #tempSONoExpress.料品=pl.ItemInfo_ItemCode where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%') and len(pl.ItemInfo_ItemCode)<=12   and  psl.DeliveryDate>'2017-01-01' and pl.status>=2  and po.Org in('1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316'  {0}  ";
-            string sqlCount = " select count(1) from(select po.ID  from dbo.PM_PurchaseOrder po   left join dbo.PM_PODocType pot on pot.id = po.DocumentType  left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o on o.id=po.org  left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID     inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID  left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory  where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and len(pl.ItemInfo_ItemCode)<=12  and  psl.DeliveryDate>'2017-01-01' and pl.status>=2   and po.Org in('1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316'  {0} group by  po.ID ) t  ";
-            string sqlSOPage = " select  ROW_NUMBER() over(order by t.id)as rownum,* from (select po.ID  from dbo.PM_PurchaseOrder po left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o on o.id=po.org  left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID  left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and len(pl.ItemInfo_ItemCode)<=12  and  psl.DeliveryDate>'2017-01-01' and pl.status>=2  and po.Org in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316'  {0} group by  po.ID ) t  ";
+            string sqlHead = " select po.ID ,po.DocNo ,po.Supplier_Supplier as Supplier ,po.Supplier_Code as SupplierCode ,st.Name as SupplierName   from dbo.PM_PurchaseOrder po  left join dbo.PM_PODocType pot on pot.id = po.DocumentType   left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o     on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id     left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID     inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory  where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%') and len(pl.ItemInfo_ItemCode)<=12 and  psl.DeliveryDate>'2017-01-01' and pl.status>=2 and po.Org in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316' and pot.code <>'PO40'  {0}  group by  po.ID ,po.DocNo ,po.Supplier_Supplier ,po.Supplier_Code ,st.Name ";
+            string sqlLine = "select po.ID as PurchaseOrder ,pl.id as ID, pl.DocLineNo ,pl.itemInfo_itemCode as ItemCode ,pl.itemInfo_itemName as ItemName  ,(case when  itemed.DescFlexField_PrivateDescSeg25='亲子包'  	then '特殊产品' else tempCategory.SaleName  end)as Dept  ,psl.DeliveryDate  as DeliveryDate   ,pl.PurQtyPU  ,(case pl.status when 0 then '开立' when 1 then '审核中' when 2 then '已审核' when 3 then '自然关闭' when 4  then '短缺关闭' when 5 then '超额关闭' else '' end) as Status,#tempInv.HZCurrentMonthInv as HZCurrentMonthInv ,#tempInv.HBCurrentMonthInv as HBCurrentMonthInv ,#tempInv.TotalInv as TotalInv ,pl.PurQtyPU as OrderQty ,case when pl.status>2 then 0 else pl.PurQtyPU-pl.TotalRecievedQtyPU-pl.TotalRtnDeductQtyPU-IsNull(#tempOpenRcv.RcvQtyPU,0) end as LastQty ,-1 as UsageQty ,0as OrderUsageQty ,#tempASN.HZOnWay as HZOnWay ,#tempASN.HBOnWay as HBOnWay ,#tempNoExpress.HBNoExpress as HBNoExpress ,#tempNoExpress.HZNoExpress as HZNoExpress ,#tempInv.HZTotalInv as HZTotalInv ,#tempInv.HBTotalInv as HBTotalInv ,#tempSONoExpress.销售未发 as SONoExpress ,0as ComInv   from dbo.PM_PurchaseOrder po    left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o     on o.id=po.org left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id     left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID     inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID    	left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id         	left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory   	left join #tempInv on #tempInv.id=psl.id 	left join #tempASN on #tempASN.id=psl.id 	left join #tempNoExpress on #tempNoExpress.采购订单号=po.docno and #tempNoExpress.采购订单行号=pl.doclineno left join #tempOpenRcv on #tempOpenRcv.pslid=psl.id left join #tempSONoExpress on #tempSONoExpress.料品=pl.ItemInfo_ItemCode where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%') and len(pl.ItemInfo_ItemCode)<=12   and  psl.DeliveryDate>'2017-01-01' and pl.status>=2  and po.Org in('1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316' and pot.code <>'PO40'  {0}  ";
+            string sqlCount = " select count(1) from(select po.ID  from dbo.PM_PurchaseOrder po   left join dbo.PM_PODocType pot on pot.id = po.DocumentType  left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o on o.id=po.org  left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID     inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID  left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory  where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and len(pl.ItemInfo_ItemCode)<=12  and  psl.DeliveryDate>'2017-01-01' and pl.status>=2   and po.Org in('1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316' and pot.code <>'PO40' {0} group by  po.ID ) t  ";
+            string sqlSOPage = " select  ROW_NUMBER() over(order by t.id)as rownum,* from (select po.ID  from dbo.PM_PurchaseOrder po left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.CBO_Supplier_Trl st on st.id=po.Supplier_Supplier     left join dbo.Base_Organization o on o.id=po.org  left join dbo.PM_POLine pl on pl.PurchaseOrder=po.id left join dbo.PM_POShipLine psl on psl.POLine=pl.id and psl.ItemInfo_ItemID=pl.ItemInfo_ItemID inner join dbo.CBO_ItemMaster im on im.id= pl.ItemInfo_ItemID  left join dbo.Kuka_BS_ItemEd itemed on itemed.item= im.id left join (select ct.Name as SaleName, c.id from dbo.CBO_Category c    left join dbo.[CBO_Category_Trl] as ct on (c.[ID] = ct.[ID])) tempCategory on tempCategory.id=im.SaleCategory where (pl.ItemInfo_ItemCode like '91.%' or pl.ItemInfo_ItemCode like '07.%')  and len(pl.ItemInfo_ItemCode)<=12  and  psl.DeliveryDate>'2017-01-01' and pl.status>=2  and po.Org in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and pot.BusinessType = '316' and pot.code <>'PO40'  {0} group by  po.ID ) t  ";
 
             #endregion
 
@@ -560,7 +558,7 @@ namespace MPS.Bussiness
             string strASN = $" SELECT  psl.id ,case when psl.status>2 then 0 else Sum(asnl.ShipQtyTU) end as TotalOnWay ,case when psl.status>2 then 0 else Sum(case when dvt.Name not like '%河北%' then asnl.ShipQtyTU else 0 end) end as HZOnWay ,case when psl.status > 2 then 0 else Sum(case when dvt.Name like '%河北%' then asnl.ShipQtyTU else 0 end) end as HBOnWay into #tempASN FROM dbo.PM_ASN AS asn  LEFT JOIN  dbo.PM_ASNLine AS asnl ON asn.ID = asnl.ASN  LEFT JOIN dbo.CBO_Supplier_Trl AS s ON s.ID = asn.Supplier_Supplier LEFT JOIN dbo.Base_ValueSetDef AS vsd ON vsd.Code = 'VP_KukaSendAddress'  LEFT JOIN dbo.Base_DefineValue AS dv ON dv.Code =asn.DescFlexField_PrivateDescSeg3 AND dv.ValueSetDef = vsd.ID  LEFT JOIN dbo.Base_DefineValue_Trl AS dvt ON dv.ID = dvt.ID Inner join dbo.PM_POShipLine psl on psl.id =asnl.SrcDocInfo_SrcDocSubline_EntityID  Inner join dbo.pm_poline pl on pl.id = psl.poline  LEFT JOIN dbo.PM_PurchaseOrder AS po ON po.ID = pl.PurchaseOrder left join dbo.PM_PODocType pot on pot.id = po.DocumentType WHERE(asnl.Status >= 2) and asnl.TotalRcvQtyTU = 0 and pl.status >= 2 and len(pl.ItemInfo_ItemCode)<= 12  {sqlParam} group by psl.id,psl.status";
             string strNoExpress = $"select rt.采购订单号,rt.采购订单行号 ,case when pl.status>2 then 0 else  Sum(rt.回货计划数量) end as TotalNoExpress ,case when pl.status > 2 then 0 else Sum(case when dvt.name not like '%河北%' then rt.回货计划数量 else 0 end) end as HZNoExpress ,case when pl.status > 2 then 0 else Sum(case when dvt.name like '%河北%' then rt.回货计划数量 else 0 end) end as HBNoExpress  into #tempNoExpress from [kuka_basedata].[dbo].[v_RtGoods] rt left join dbo.Kuka_VPT_RtGoodsDoc rd on rd.docno = rt.回货计划单号 LEFT JOIN dbo.Base_DefineValue_trl AS dvt ON dvt.id = rd.AddressRef left join dbo.PM_PurchaseOrder po on po.DocNo = rt.采购订单号 left join dbo.PM_POline pl on po.id = pl.PurchaseOrder and pl.DocLineNo = rt.采购订单行号 where rt.回货行状态 = '已审状态' and ASN单号 is null {sqlParam} group by rt.采购订单号,rt.采购订单行号,pl.status ";
 
-            string strSONoExpress = $"SELECT   t2.ItemInfo_ItemCode as 料品, SUM(t2.OrderByQtyTU - t2.SOLineSumInfo_SumShipQtyPU) AS 销售未发 into #tempSONoExpress FROM production.dbo.SM_SO AS t1 INNER JOIN production.dbo.SM_SOLine AS t2 ON t1.ID = t2.SO INNER JOIN  production.dbo.Base_Organization_Trl AS org ON t1.AccountOrg = org.ID AND org.SysMLFlag = 'zh-CN' INNER JOIN production.dbo.SM_SODocType AS t4 ON t1.DocumentType = t4.ID LEFT OUTER JOIN production.dbo.CBO_Customer AS t10 ON t1.OrderBy_Customer = t10.ID WHERE(t2.Status = 3) AND(t4.IsExport = 0) AND(org.Name IN('浙江顾家梅林家居有限公司','宁波梅山保税港区顾家寝具有限公司', '宁波名尚智能家居有限公司', '杭州顾家定制家居有限公司','顾家家居(宁波)有限公司', '顾家家居股份有限公司2', '宁波卡文家居有限公司')) AND (t4.ShortName NOT IN('内销备货订单', 'SO2', '外销人民币销售单')) AND(t10.Code NOT IN('CU-8899988', 'CU-799999', 'CU-7999993', 'CU-7999994', 'CU-79999991', 'CU-8799971', 'CU-87999980', 'CU-87999998', 'CU-889998', 'PU-790011')) AND(t2.OrderByQtyTU > t2.SOLineSumInfo_SumShipQtyPU) AND(t2.ItemInfo_ItemCode LIKE '91%' OR t2.ItemInfo_ItemCode LIKE '07.%') AND(LEN(t2.ItemInfo_ItemCode) <= 12) GROUP BY t2.ItemInfo_ItemCode";
+            string strSONoExpress = $"SELECT   t2.ItemInfo_ItemCode as 料品, SUM(t2.OrderByQtyTU - t2.SOLineSumInfo_SumShipQtyPU) AS 销售未发 into #tempSONoExpress FROM dbo.SM_SO AS t1 INNER JOIN dbo.SM_SOLine AS t2 ON t1.ID = t2.SO INNER JOIN  dbo.Base_Organization_Trl AS org ON t1.AccountOrg = org.ID AND org.SysMLFlag = 'zh-CN' INNER JOIN dbo.SM_SODocType AS t4 ON t1.DocumentType = t4.ID LEFT OUTER JOIN dbo.CBO_Customer AS t10 ON t1.OrderBy_Customer = t10.ID WHERE(t2.Status = 3) AND(t4.IsExport = 0) AND(org.Name IN('浙江顾家梅林家居有限公司','宁波梅山保税港区顾家寝具有限公司', '宁波名尚智能家居有限公司', '杭州顾家定制家居有限公司','顾家家居(宁波)有限公司', '顾家家居股份有限公司2', '宁波卡文家居有限公司')) AND (t4.ShortName NOT IN('内销备货订单', 'SO2', '外销人民币销售单')) AND(t10.Code NOT IN('CU-8899988', 'CU-799999', 'CU-7999993', 'CU-7999994', 'CU-79999991', 'CU-8799971', 'CU-87999980', 'CU-87999998', 'CU-889998', 'PU-790011')) AND(t2.OrderByQtyTU > t2.SOLineSumInfo_SumShipQtyPU) AND(t2.ItemInfo_ItemCode LIKE '91%' OR t2.ItemInfo_ItemCode LIKE '07.%') AND(LEN(t2.ItemInfo_ItemCode) <= 12) GROUP BY t2.ItemInfo_ItemCode";
 
             string openRcv = "select rcvl.SrcDoc_SrcDocSubLine_EntityID as pslid,sum(rcvl.RcvQtyPU) as RcvQtyPU into #tempOpenRcv from dbo.PM_Receivement rcv left join dbo.PM_RcvLine rcvl on rcv.id = rcvl.Receivement and rcvl.KitParentLine=0 left join dbo.Base_Organization_Trl ot on ot.id = rcv.Org Inner join dbo.PM_POShipLine psl on psl.id = rcvl.SrcDoc_SrcDocSubline_EntityID  Inner join dbo.pm_poline pl on pl.id = psl.poline  left join dbo.PM_PurchaseOrder po on po.id = pl.PurchaseOrder left join dbo.PM_PODocType pot on pot.id = po.DocumentType left join dbo.cbo_itemmaster im on im.id = rcvl.ItemInfo_ItemID left join dbo.Base_UOM_Trl uomt on uomt.id = rcvl.StoreUOM  left join dbo.CBO_Supplier_trl st on st.id = rcv.Supplier_Supplier  left join dbo.cbo_wh_trl wht on wht.id = rcvl.wh left join dbo.cbo_wh wh on wh.id = rcvl.wh where ot.id in( '1003703211326886','1003703211328215','1002902253057451','1003703211331940','1003704015042704','1003703211330900') and  (rcvl.ItemInfo_ItemCode like '91.%' or rcvl.ItemInfo_ItemCode like '07.%') and len(rcvl.ItemInfo_ItemCode)<=12 and rcvl.Status <= 3 group by rcvl.SrcDoc_SrcDocSubLine_EntityID";
             #endregion
@@ -579,6 +577,57 @@ namespace MPS.Bussiness
             var dataSet = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
             var dataHead = ExtendMethod.ToDataList<JCPOInfo>(dataSet.Tables[0]);
             var dataLine = ExtendMethod.ToDataList<JCPOLineInfo>(dataSet.Tables[1]);
+            Dictionary<long, List<JCPOLineInfo>> map = new Dictionary<long, List<JCPOLineInfo>>();
+            foreach (JCPOLineInfo line in dataLine)
+            {
+                if (map.ContainsKey(line.PurchaseOrder))
+                {
+                    map[line.PurchaseOrder].Add(line);
+                }
+                else
+                {
+                    map.Add(line.PurchaseOrder, new List<JCPOLineInfo>() { line });
+                }
+            }
+            foreach (JCPOInfo head in dataHead)
+            {
+                if (map.ContainsKey(head.ID))
+                {
+                    head.POLines = map[head.ID];
+                }
+                else
+                {
+                    head.POLines = new List<JCPOLineInfo>();
+                }
+            }
+            result.data = dataHead;
+            #endregion
+
+            return result;
+        }
+
+
+        public RetModel<List<JCPOInfo>> GetJCPOInfoV3(RecModel<ItemInfoQuery> param)
+        {
+
+            RetModel<List<JCPOInfo>> result = new RetModel<List<JCPOInfo>>();
+            result.code = "0";
+            result.message = "0";
+
+
+            #region 查询
+            DataSet ds = DbHelperSQL.ExecuteDataSet("kuka_basedata.dbo.Kuka_SP_MPS_JCPOInfo", new SqlParameter[] {
+                new SqlParameter("startTime",param.data.startTime==null?"":param.data.startTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
+                new SqlParameter("endTime",param.data.endTime==null?"":param.data.endTime.Value.ToString("yyyy-MM-dd HH:mm:ss")),
+                new SqlParameter("pageIndex",param.data.pageIndex),
+                new SqlParameter("pageSize",param.data.pageSize),
+                new SqlParameter("keyValue",param.data.keyValue==null?"":param.data.keyValue)
+            });
+            //var dataSet2 = DbHelperSQL.QueryDataSet(sqlQuery.ToString(), listParam);
+            result.message = ds.Tables[0].Rows[0][0].ToString();
+            var dataHead = ExtendMethod.ToDataList<JCPOInfo>(ds.Tables[1]);
+            var dataLine = ExtendMethod.ToDataList<JCPOLineInfo>(ds.Tables[2]);
+            
             Dictionary<long, List<JCPOLineInfo>> map = new Dictionary<long, List<JCPOLineInfo>>();
             foreach (JCPOLineInfo line in dataLine)
             {

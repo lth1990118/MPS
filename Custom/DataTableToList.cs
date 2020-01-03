@@ -29,12 +29,12 @@ namespace Custom
                     PropertyInfo info = plist.Find(p => p.Name.ToUpper() == dt.Columns[i].ColumnName.ToUpper());
                     if (info != null)
                     {
-                        try
+                       // try
                         {
                             if (!Convert.IsDBNull(item[i]))
                             {
                                 object v = null;
-                                string value = item[i].ObjToString() == "" ? null : item[i].ObjToString();
+                                string value = item[i].ObjToString() == "" ? "" : item[i].ObjToString();
                                 if (info.PropertyType.ToString().Contains("System.Nullable"))
                                 {
                                    
@@ -62,10 +62,10 @@ namespace Custom
                                 info.SetValue(s, v, null);
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            throw new Exception("字段[" + info.Name + "]转换出错," + ex.Message);
-                        }
+                        //catch (Exception ex)
+                        //{
+                        //    throw new Exception("字段[" + info.Name + "]转换出错," + ex.Message);
+                        //}
                     }
                 }
                 list.Add(s);
